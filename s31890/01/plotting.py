@@ -13,8 +13,10 @@ df = pd.DataFrame(data)
 
 import matplotlib.pyplot as plt
 
-plt.bar(df["Month_name"], df["money"])
-plt.title("Coffee Sales by Month")
-plt.xlabel("Month")
-plt.ylabel("Amount Spent")
+money_average = df["money"].rolling(window=20).mean()
+
+plt.plot(pd.to_datetime(df["Date"]), money_average)
+plt.title("Coffee Sales Average by Date")
+plt.xlabel("Date")
+plt.ylabel("Running Average Amount Spent")
 plt.savefig("coffee_sales_plot.png")
