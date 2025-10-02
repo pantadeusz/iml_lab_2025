@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="Black">
-    <option name="sdkName" value="torchNAI" />
-  </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="iml_lab_env" project-jdk-type="Python SDK" />
-</project>
