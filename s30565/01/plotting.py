@@ -11,3 +11,5 @@ plt.title("Avg salary vs Years of experience")
 plt.xlabel("Experience")
 plt.ylabel("Salary")
 plt.savefig("siema.png")
+
+#dataset from https://www.kaggle.com/datasets/ayeshasiddiqa123/salary-data

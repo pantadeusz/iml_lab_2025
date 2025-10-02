@@ -24,3 +24,6 @@ plt.hist(filtered[args.column])
 plt.xlabel("x")
 plt.ylabel("y")
 plt.savefig("hist.png")
+
+
+#dataset from https://www.kaggle.com/datasets/ayeshasiddiqa123/salary-data
