@@ -1,0 +1,6 @@
+pandas
+matplotlib
+jupyter
+black
+kagglehub
+argparse
