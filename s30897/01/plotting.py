@@ -13,9 +13,9 @@ top10 = df.sort_values(by="view_count", ascending=False).head(10)
 
 # Wykres
 plt.figure(figsize=(12, 6))
-bars = plt.barh(top10["title"], top10["view_count"], color='skyblue')
+plt.barh(top10["title"], top10["view_count"], color='skyblue')
 plt.xlabel("Liczba wyświetleń (Views)")
-plt.title("Top 10 najpopularniejszych piosenek YouTube (2025)")
+plt.title("Top 10 najpopularniejszych piosenek YouTube")
 plt.gca().invert_yaxis()
 plt.tight_layout()
 plt.show()
