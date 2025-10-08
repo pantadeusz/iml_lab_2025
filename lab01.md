@@ -127,7 +127,22 @@ Uwaga: Studenci nie mają uprawnień do zapisu w głównym repozytorium, więc n
 
 3. Zapisz wykres do pliku PNG.
 
-## Krok 7: Podsumowanie i commit
+## Krok 7: Kwestie składni (20 minut)
+
+1. W podkatalogu `s<indeks>/01` utwórz plik `syntax_issues.py`.
+2. Napisz skrypt, który:
+   - Przyjmuje argumenty z linii komend: ścieżka do pliku CSV, nazwa kolumny, minimalna wartość zakresu, maksymalna wartość zakresu.
+   - Załaduje dane z pliku CSV za pomocą pandas.
+   - Wyfiltruje dane z podanej kolumny w zadanym zakresie wartości.
+   - Wypisze wartości z wyznaczonego zakresu.
+   - Wygeneruje histogram dla tych wartości za pomocą matplotlib i zapisze wykres do pliku PNG (np. `histogram.png`).
+3. Uruchom skrypt z przykładowymi argumentami, np.:
+
+   ```bash
+   python syntax_issues.py <ścieżka_do_pliku_csv> <nazwa_kolumny> <min_wartość> <max_wartość>
+   ```
+
+## Krok 8: Podsumowanie i commit
 
 1. Dodaj wszystkie pliki do Gita:
 
@@ -145,23 +160,6 @@ Uwaga: Studenci nie mają uprawnień do zapisu w głównym repozytorium, więc n
    - Upewnij się, że base repository to główne repo (np. pantadeusz/iml_lab_2025), a head to Twój fork i gałąź `lab1-s<indeks>`.
    - Dodaj tytuł i opis PR, np. "Rozwiązanie lab 1 - s<indeks>".
    - Kliknij "Create pull request".
-
-## Krok 8: Kwestie składni (20 minut)
-
-1. W podkatalogu `s<indeks>/01` utwórz plik `syntax_issues.py`.
-2. Napisz skrypt, który:
-   - Przyjmuje argumenty z linii komend: ścieżka do pliku CSV, nazwa kolumny, minimalna wartość zakresu, maksymalna wartość zakresu.
-   - Załaduje dane z pliku CSV za pomocą pandas.
-   - Wyfiltruje dane z podanej kolumny w zadanym zakresie wartości.
-   - Wypisze wartości z wyznaczonego zakresu.
-   - Wygeneruje histogram dla tych wartości za pomocą matplotlib i zapisze wykres do pliku PNG (np. `histogram.png`).
-3. Uruchom skrypt z przykładowymi argumentami, np.:
-
-   ```bash
-   python syntax_issues.py <ścieżka_do_pliku_csv> <nazwa_kolumny> <min_wartość> <max_wartość>
-   ```
-
-4. Zaktualizuj plik `requirements.txt` jeśli dodałeś nowe zależności (choć pandas i matplotlib powinny już być dostępne).
 
 ## Ocena
 
