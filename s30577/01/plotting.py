@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
-csv = "/Users/computer/.cache/kagglehub/datasets/ayeshasiddiqa123/top-100-trending-music-on-youtube/versions/1/youtube-top-100-songs-2025.csv"
+csv = "/Users/computer/Library/Mobile Documents/com~apple~CloudDocs/STUDIA/5 Semestr/youtube-top-100-songs-2025.csv"
 
 df = pd.read_csv(csv)
 print(df.columns)
