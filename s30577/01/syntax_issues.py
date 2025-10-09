@@ -12,7 +12,6 @@ min = int(sys.argv[3])
 max = int(sys.argv[4])
 
 df = pd.read_csv(csv)
-print(df.columns)
 
 filtrowanie = df[(df[kolumna] > min) & (df[kolumna] < max)]
 
