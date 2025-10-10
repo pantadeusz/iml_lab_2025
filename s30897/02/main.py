@@ -46,30 +46,28 @@ def manual_classification_report(y_true, y_pred, output_dict=True):
     cm = manual_confusion_matrix(y_true, y_pred)
     TN, FP, FN, TP = cm.ravel()
 
-    metrics = {}
-    for label, (num, denom1, denom2) in enumerate([(TN, TN + FN, TN + FP), (TP, TP + FP, TP + FN)]): # Pętla, która przypisuje TN, FN, TP, FP do odpowiednich funkcji
-        precision = float(num / denom1) if denom1 > 0 else 0
-        recall = float(num / denom2) if denom2 > 0 else 0
-        f1 = float(2 * precision * recall / (precision + recall)) if (precision + recall) > 0 else 0
-        support = float(np.sum(y_true == label))
-        metrics[str(label)] = {
-            "precision": precision,
-            "recall": recall,
-            "f1-score": f1,
-            "support": support
-        }
+    prec_0 = TN / (TN + FN) if (TN + FN) > 0 else 0
+    rec_0 = TN / (TN + FP) if (TN + FP) > 0 else 0
+    f1_0 = 2 * prec_0 * rec_0 / (prec_0 + rec_0) if (prec_0 + rec_0) > 0 else 0
 
-    accuracy = float((TP + TN) / len(y_true))
+    prec_1 = TP / (TP + FP) if (TP + FP) > 0 else 0
+    rec_1 = TP / (TP + FN) if (TP + FN) > 0 else 0
+    f1_1 = 2 * prec_1 * rec_1 / (prec_1 + rec_1) if (prec_1 + rec_1) > 0 else 0
+
+    accuracy = (TP + TN) / len(y_true)
+
     if output_dict:
         return {
-            "0": metrics["0"],
-            "1": metrics["1"],
-            "accuracy": accuracy,
+            "0": {"precision": float(prec_0), "recall": float(rec_0),
+                  "f1-score": float(f1_0), "support": float(np.sum(y_true == 0))},
+            "1": {"precision": float(prec_1), "recall": float(rec_1),
+                  "f1-score": float(f1_1), "support": float(np.sum(y_true == 1))},
+            "accuracy": float(accuracy)
         }
     else:
         return f"""
-Klasa 0: prec={metrics['0']['precision']:.3f}, rec={metrics['0']['recall']:.3f}, f1={metrics['0']['f1-score']:.3f}, sup={int(metrics['0']['support'])}
-Klasa 1: prec={metrics['1']['precision']:.3f}, rec={metrics['1']['recall']:.3f}, f1={metrics['1']['f1-score']:.3f}, sup={int(metrics['1']['support'])}
+Klasa 0: prec={prec_0:.3f}, rec={rec_0:.3f}, f1={f1_0:.3f}, sup={int(np.sum(y_true == 0))}
+Klasa 1: prec={prec_1:.3f}, rec={rec_1:.3f}, f1={f1_1:.3f}, sup={int(np.sum(y_true == 1))}
 Accuracy: {accuracy:.3f}
 """
 
