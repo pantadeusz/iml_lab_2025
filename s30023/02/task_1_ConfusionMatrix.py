@@ -64,33 +64,34 @@ def manual_classification_report(y_true, y_pred, output_dict=True):
     recall_weighted = (recall_0 * support_0 + recall_1 * support_1) / support_weighted
     f1_weighted = (f1_score_0 * support_0 + f1_score_1 * support_1) / support_weighted
 
-    return {
-        "0": {
-            "precision": float(precision_0),
-            "recall": float(recall_0),
-            "f1-score": float(f1_score_0),
-            "support": float(support_0),
-        },
-        "1": {
-            "precision": float(precision_1),
-            "recall": float(recall_1),
-            "f1-score": float(f1_score_1),
-            "support": float(support_1),
-        },
-        "accuracy": float(accuracy),
-        "macro avg":{
-            "precision": float(precision_macro),
-            "recall": float(recall_macro),
-            "f1-score": float(f1_macro),
-            "support": float(support_macro),
-        },
-        "weighted avg":{
-            "precision": float(precision_weighted),
-            "recall": float(recall_weighted),
-            "f1-score": float(f1_weighted),
-            "support": float(support_weighted),
+    if output_dict:
+        return {
+            "0": {
+                "precision": float(precision_0),
+                "recall": float(recall_0),
+                "f1-score": float(f1_score_0),
+                "support": float(support_0),
+            },
+            "1": {
+                "precision": float(precision_1),
+                "recall": float(recall_1),
+                "f1-score": float(f1_score_1),
+                "support": float(support_1),
+            },
+            "accuracy": float(accuracy),
+            "macro avg":{
+                "precision": float(precision_macro),
+                "recall": float(recall_macro),
+                "f1-score": float(f1_macro),
+                "support": float(support_macro),
+            },
+            "weighted avg":{
+                "precision": float(precision_weighted),
+                "recall": float(recall_weighted),
+                "f1-score": float(f1_weighted),
+                "support": float(support_weighted),
+            }
         }
-    }
 
 
 # Użyj scikit-learn
@@ -102,7 +103,7 @@ print(classification_report(y_test, y_pred, output_dict=True))
 print(manual_classification_report(y_test, y_pred, output_dict=True))
 # Wizualizacja
 ConfusionMatrixDisplay(cm).plot()
-plt.savefig("confusion_matrix.png")
+plt.savefig("confusion_matrix_cm.png")
 ConfusionMatrixDisplay(cm2).plot()
-plt.savefig("confusion_matrix2.png")
+plt.savefig("confusion_matrix_cm2.png")
 plt.close()
