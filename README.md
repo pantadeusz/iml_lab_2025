@@ -12,3 +12,4 @@ To repozytorium zawiera instrukcje i materiały do laboratoriów z przedmiotu IM
 4. Po ukończeniu laboratorium, utwórz Pull Request do tego głównego repozytorium.
 
 Każdy student powinien tworzyć swoje rozwiązania w osobnym podkatalogu o nazwie `s<indeks>`, np. `s12345/01` dla laboratorium 1.
+
