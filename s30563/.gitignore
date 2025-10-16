@@ -1,0 +1,40 @@
+# Virtual environment
+venv/
+ENV/
+env/
+lab_env
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyCharm project files
+.idea/
+*.iml
+
+# MacOS
+**/.DS_Store
+
+# Logs
+*.log
+
+# data files
+*.csv
+*.xlsx
+*.xls
+*.json
+*.png
+
+# Byte-compiled / optimized / DLL files
+*.so
+*.pyd
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
