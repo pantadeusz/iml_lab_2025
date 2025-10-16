@@ -1,0 +1,10 @@
+Wniosek z przeprowadzonego eksperymentu jest taki, że zmiana
+progu decyzyjnego mocno wpływa na czułość i swoistoś modelu.
+
+Ustawienie niskiego progu (np. 0.2) maksymalizuje czułość.
+Model wyłapuje prawie wszystkie przypadki pozytywne, ale kosztem niższej swoistości,
+co prowadzi do większej liczby fałszywych alarmów.
+
+Ustawienie wysokiego progu (np. 0.9) maksymalizuje swoistość.
+Model jest bardzo pewny swoich negatywnych predykcji i generuje mało fałszywych alarmów,
+ale odbywa się to kosztem niższej czułości, przez co przeocza więcej przypadków pozytywnych.
