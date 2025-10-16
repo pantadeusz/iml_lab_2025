@@ -1,3 +1,4 @@
+import argparse
 import numpy as np
 from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
@@ -93,6 +94,16 @@ def manual_classification_report(y_true, y_pred, output_dict=True):
             }
         }
 
+parser = argparse.ArgumentParser(description="Z progiem decyzyjnym")
+parser.add_argument("-prog_dec", type=float, default=0.8, help="Próg decyzyjny (std = 0.8)")
+args = parser.parse_args()
+prog_decyzyjny = args.prog_dec
+
+y_prob = model.predict_proba(X_test)[:,1]
+y_pred_prob = np.where(y_prob >= prog_decyzyjny, 1, 0)
+
+print(f"Próg decyzyjny: {prog_decyzyjny}\n"
+      f"{manual_classification_report(y_test, y_pred_prob)}")
 
 # Użyj scikit-learn
 cm = confusion_matrix(y_test, y_pred)

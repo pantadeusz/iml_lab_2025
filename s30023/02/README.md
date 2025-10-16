@@ -32,3 +32,8 @@ Dla wszystkich klas:
 Macro avg + Weighted avg:
 - macro avg: prosta średnia z metryk dla wszystkich klas
 - weighted avg: średnia ważona liczbą przykładów
+
+# Próg decyzyjny 
+
+- Niski próg -> wysoka czułość, niska swoistość
+- oki próg -> wyższa swoistość, niższa czułość
