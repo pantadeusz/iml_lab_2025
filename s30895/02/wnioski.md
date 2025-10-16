@@ -22,3 +22,9 @@ czułość - prawdopodobieństwo że chory pacjent zostanie prawidłowo sklasyfi
 specyficzność - prawdopodobieństwo że zdrowy pacjent zostanie prawidłowo sklasyfikowany
 
 Wraz z podnoszeniem progu decyzyjnego specyficzność rośnie natomiast przy bardzo wysokim progu (0.9) czułość spada.
+
+Niski próg decyzyjny powoduje, że model częściej klasyfikuje pacjentów jako chorych 
+— dzięki temu wykrywa większość przypadków choroby (wysoka czułość), 
+ale kosztem większej liczby fałszywych alarmów (niższa specyficzność).
+Wysoki próg decyzyjny działa w sposób odwrotny, chorzy są "ostrożniej" klasyfikowani, liczba fałszywych
+pozytywów jest mniejsza.
