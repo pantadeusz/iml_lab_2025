@@ -33,7 +33,7 @@ y_pred = (y_pred_proba[:, 1] >= threshold).astype(int)
 
 
 def calculate_f1_score(precision, recall):
-    return 2 * (precision * recall) / (precision + recall)
+    return 2 * (precision * recall) / (precision + recall) if precision + recall > 0 else 0
 
 
 # Ręczne obliczenie miar
@@ -50,6 +50,7 @@ def manual_confusion_matrix(y_true, y_pred):
 
     return matrix_np
 
+
 def calculate_sensitivity_specificity(y_true, y_pred):
     cm = manual_confusion_matrix(y_true, y_pred)
     tp = cm[1][1]
@@ -57,8 +58,8 @@ def calculate_sensitivity_specificity(y_true, y_pred):
     fn = cm[1][0]
     tn = cm[0][0]
 
-    sensitivity = tp / (tp + fn)
-    specificity = tn / (tn + fp)
+    sensitivity = tp / (tp + fn) if (tp + fn) > 0 else 0
+    specificity = tn / (tn + fp) if (tn + fp) > 0 else 0
 
     return float(sensitivity), float(specificity)
 
@@ -83,22 +84,31 @@ def manual_classification_report(y_true, y_pred, output_dict=True):
     f1_scores = []
     supports = []
 
+    result = {}
+
     for i, label in enumerate(labels):
         tp = confusion_matrix[i, i]
         fp = confusion_matrix[:, i].sum() - tp
         fn = confusion_matrix[i, :].sum() - tp
 
-        precision = tp / (tp + fp)
-        recall = tp / (tp + fn)
+        precision = tp / (tp + fp) if tp + fp > 0 else 0
+        recall = tp / (tp + fn) if tp + fn > 0 else 0
         f1_score = calculate_f1_score(precision, recall)
         support = confusion_matrix[i, :].sum()
+
+        result[str(label)] = {
+            "precision": float(precision),
+            "recall": float(recall),
+            "f1-score": float(f1_score),
+            "support": int(support)
+        }
 
         precisions.append(float(precision))
         recalls.append(float(recall))
         f1_scores.append(float(f1_score))
         supports.append(float(support))
 
-    accuracy = float(confusion_matrix.diagonal().sum() / confusion_matrix.sum())
+    accuracy = float(confusion_matrix.diagonal().sum() / confusion_matrix.sum()) if confusion_matrix.sum() > 0 else 0
 
     macro_avg_precision = float(np.mean(precisions))
     macro_avg_recall = float(np.mean(recalls))
@@ -112,10 +122,6 @@ def manual_classification_report(y_true, y_pred, output_dict=True):
 
     sum_support = float(confusion_matrix.sum())
 
-    result = {
-        str(l): {"precision": p, "recall": r, "f1-score": f, "support": s}
-        for l, p, r, f, s in zip(labels, precisions, recalls, f1_scores, supports)
-    }
     result["accuracy"] = accuracy
 
     result["macro avg"] = {
