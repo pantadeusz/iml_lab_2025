@@ -1,0 +1,1 @@
+Do wartości około progu ~0.7-0.8 czułość utrzymuje się na wysokim poziomie blisko 0.98, swoistość na ~0.9, natomiast przy progu 0.8 zaczyna drastycznie spadać czułość w przeciwieństwie do swoistości. Można z tego wydedukować, że im większy próg tym mniejsza czułość, a większa swoistość.

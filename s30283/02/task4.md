@@ -1,0 +1,1 @@
+Użycie ważenia klas, oversamplingu i undersamplingu powoduje zwiększenie recalla i f1 niewielkim kosztem dokładności i precyzji.
