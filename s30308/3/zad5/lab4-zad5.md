@@ -1,0 +1,1 @@
+# Analiza skuteczności metod w #

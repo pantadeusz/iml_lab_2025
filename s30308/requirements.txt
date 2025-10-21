@@ -2,3 +2,4 @@ pandas
 matplotlib
 jupyter
 kagglehub
+imblearn
