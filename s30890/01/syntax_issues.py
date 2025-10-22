@@ -23,9 +23,9 @@ print(f"wartosci kolumny '{column_name}' w zakresie {min_val}–{max_val}:")
 print(filtered[column_name])
 
 plt.hist(filtered[column_name], bins=20, edgecolor='black')
-plt.title(f'Histogram wartości z kolumny {column_name}')
+plt.title(f'histogram wartości z kolumny {column_name}')
 plt.xlabel(column_name)
-plt.ylabel('Liczba wystąpień')
+plt.ylabel('liczba wystapien')
 
 plt.savefig('histogram.png')
 plt.show()

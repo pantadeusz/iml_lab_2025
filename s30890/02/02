@@ -1,0 +1,106 @@
+import numpy as np
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import (
+    confusion_matrix,
+    classification_report,
+    ConfusionMatrixDisplay,
+)
+import matplotlib.pyplot as plt
+import json
+
+#zaladuj dane
+data = load_breast_cancer()
+X, y = data.data, data.target
+# Podziel dane
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+# Trenuj model
+model = LogisticRegression(random_state=42, max_iter=3000)
+model.fit(X_train, y_train)
+# Predykcje
+y_pred = model.predict(X_test)
+
+
+# Ręczne obliczenie miar
+def manual_confusion_matrix(y_true, y_pred):
+    y_true = np.array(y_true)
+    y_pred = np.array(y_pred)
+    
+    tp = np.sum((y_true == 1) & (y_pred == 1))
+    tn = np.sum((y_true == 0) & (y_pred == 0))
+    fp = np.sum((y_true == 0) & (y_pred == 1))
+    fn = np.sum((y_true == 1) & (y_pred == 0))
+    
+    return np.array([[tn, fp], [fn, tp]])
+
+
+def manual_classification_report(y_true, y_pred, output_dict=True):
+    confusion_matrix = manual_confusion_matrix(y_true, y_pred)
+    tn, fp, fn, tp = confusion_matrix.ravel()
+    
+    precision_0 = tn/(tn+fn) if (tn + fn) != 0 else 0 
+    recall_0 = tn/(tn+fp) if (tn + fp) != 0 else 0
+    f1_0 = (2 * precision_0 * recall_0) / (precision_0 + recall_0) if (precision_0 + recall_0) != 0 else 0
+    support_0 = np.sum(y_true == 0)
+    
+    precision_1 = tp/(tp+fp) if (tp + fp) != 0 else 0
+    recall_1 = tp/(tp+fn) if (tp + fn) != 0 else 0
+    f1_1 = (2 * precision_1 * recall_1) / (precision_1 + recall_1) if (precision_1 + recall_1) != 0 else 0
+    support_1 = np.sum(y_true == 1)
+    
+    precision_avg = (precision_0 + precision_1) / 2
+    recall_avg = (recall_0 + recall_1) / 2
+    f1_avg = (f1_0 + f1_1) / 2 
+    support_total = support_0 + support_1
+    
+    if output_dict:
+        return{
+            '0': {
+                'precision': precision_0,
+                'recall': recall_0,
+                'f1-score': f1_0,
+                'support': support_0
+            },
+            '1': {
+                'precision': precision_1,
+                'recall': recall_1,
+                'f1-score': f1_1,
+                'support': support_1
+            },
+            'accuracy': (tp + tn) / (tp + tn + fp + fn),
+            'macro avg': {
+                'precision': precision_avg,
+                'recall': recall_avg,
+                'f1-score': f1_avg,
+                'support': support_total
+            },
+        }
+    else:
+        print(f"klasa 0 -> precision: {precision_0}, recall: {recall_0}, f1-score: {f1_0}, support: {support_0}", '/n')
+        print(f"klasa 1 -> precision: {precision_1}, recall: {recall_1}, f1-score: {f1_1}, support: {support_1}", '/n')
+
+
+# Użyj scikit-learn
+print(f"\n confusion matrices: \n")
+cm = confusion_matrix(y_test, y_pred)
+print("\n", cm, "\n")
+cm2 = manual_confusion_matrix(y_test, y_pred)
+print(cm2, "\n")
+
+report_sklearn = classification_report(y_test, y_pred, output_dict=True)
+report_manual = manual_classification_report(y_test, y_pred, output_dict=True)
+
+print("\n sklearn classification report:")
+print(json.dumps(report_sklearn, indent=4, default=float))
+
+print("\n manual classification report:")
+print(json.dumps(report_manual, indent=4, default=float))
+
+
+# Wizualizacja
+ConfusionMatrixDisplay(cm).plot()
+plt.savefig("confusion_matrix.png")
+plt.close()

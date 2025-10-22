@@ -9,4 +9,6 @@ plt.scatter(df['f1'],df['f5'],c=df['label'].astype("category").cat.codes,cmap='r
 
 plt.xlabel('alert')
 plt.ylabel('magnitude')
+
+plt.savefig("plot.png", dpi=300)
 plt.show()
