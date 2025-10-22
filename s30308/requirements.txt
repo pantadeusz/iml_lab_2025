@@ -2,4 +2,5 @@ pandas
 matplotlib
 jupyter
 kagglehub
+scikit-learn
 imblearn
