@@ -12,7 +12,6 @@ from sklearn.metrics import mean_squared_error
 data = load_diabetes()
 X, y = data.data, data.target
 
-print(data)
 
 # Symuluj braki (MCAR)
 rng = np.random.RandomState(42)
@@ -22,9 +21,9 @@ X_missing[missing_mask] = np.nan
 
 # Metody imputacji
 imputers = {
-    'Mean': SimpleImputer(strategy='mean'),
-    'KNN': KNNImputer(n_neighbors=5),
-    'MICE': IterativeImputer(random_state=42)
+    "Mean": SimpleImputer(strategy="mean"),
+    "KNN": KNNImputer(n_neighbors=5),
+    "MICE": IterativeImputer(random_state=42, max_iter=1000)
 }
 
 results = {}
@@ -32,7 +31,9 @@ results = {}
 # Trenowanie modelu bez brakow
 model = LinearRegression()
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
 
 model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
@@ -46,7 +47,9 @@ for name, imputer in imputers.items():
     # Trenuj model i oceń
     # ... (podziel na train/test, trenuj, oceń)
 
-    X_train, X_test, y_train, y_test = train_test_split(X_imputed, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X_imputed, y, test_size=0.2, random_state=42
+    )
 
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
