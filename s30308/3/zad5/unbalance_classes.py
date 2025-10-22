@@ -110,37 +110,58 @@ def generate_confusion_matrix(prediction, model_name="unknown"):
     plt.savefig(f"confusion_matrix--{model_name}.png")
     plt.close()
 
-# Generuj dane niezbalansowane
-X, y = make_classification(n_samples=1000, n_features=20, n_classes=2, weights=[0.95, 0.05], random_state=42)
 
-# Bazowy model
-model = LogisticRegression(random_state=42)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42)
-model.fit(X_train, y_train)
-y_pred = model.predict(X_test)
-generate_confusion_matrix(y_pred, "base_model")
+def create_base_model(threshold):
+    model.fit(X_train, y_train)
+    y_proba = model.predict_proba(X_test)[:, 1]  # prawdopodobieństwo klasy 1
+    y_pred_thresh = (y_proba >= threshold).astype(int)
+    generate_confusion_matrix(y_pred_thresh, f"base_model-threshold={threshold}")
 
 
-# 1. Ważenie klas
-model_weighted = LogisticRegression(class_weight='balanced', random_state=42)
-model_weighted.fit(X_train, y_train)
-y_pred_weighted = model_weighted.predict(X_test)
-generate_confusion_matrix(y_pred_weighted, "weighted_model")
+def create_weighted_model():
+    model_weighted = LogisticRegression(class_weight='balanced', random_state=42)
+    model_weighted.fit(X_train, y_train)
+    y_pred_weighted = model_weighted.predict(X_test)
+    generate_confusion_matrix(y_pred_weighted, f"weighted_model")
 
-# 2. SMOTE
-smote = SMOTE(random_state=42)
-X_smote, y_smote = smote.fit_resample(X_train, y_train)
 
-model_smote = LogisticRegression(random_state=42)
-model_smote.fit(X_smote, y_smote)
-y_pred_smote = model_smote.predict(X_test)
-generate_confusion_matrix(y_pred_smote, "smote_model")
+def create_smote_model():
+    smote = SMOTE(random_state=42)
+    X_smote, y_smote = smote.fit_resample(X_train, y_train)
 
-# 3. Undersampling
-rus = RandomUnderSampler(random_state=42)
-X_rus, y_rus = rus.fit_resample(X_train, y_train)
+    model_smote = LogisticRegression(random_state=42)
+    model_smote.fit(X_smote, y_smote)
+    y_pred_smote = model_smote.predict(X_test)
+    generate_confusion_matrix(y_pred_smote, "smote_model")
 
-model_under = LogisticRegression(random_state=42)
-model_under.fit(X_rus, y_rus)
-y_pred_rus = model_under.predict(X_test)
-generate_confusion_matrix(y_pred_rus, "undersampling_model")
+
+def create_undersampling_model():
+    rus = RandomUnderSampler(random_state=42)
+    X_rus, y_rus = rus.fit_resample(X_train, y_train)
+
+    model_under = LogisticRegression(random_state=42)
+    model_under.fit(X_rus, y_rus)
+    y_pred_rus = model_under.predict(X_test)
+    generate_confusion_matrix(y_pred_rus, "undersampling_model")
+
+
+
+if __name__ == '__main__':
+    # Generuj dane niezbalansowane
+    X, y = make_classification(n_samples=1000, n_features=20, n_classes=2, weights=[0.95, 0.05], random_state=42)
+
+    # Bazowy model
+    model = LogisticRegression(random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42)
+
+    for i in range(1, 10):
+        create_base_model(i / 10)
+
+    # 1. Ważenie klas
+    create_weighted_model()
+
+    # 2. SMOTE
+    create_smote_model()
+
+    # 3. Undersampling
+    create_undersampling_model()
