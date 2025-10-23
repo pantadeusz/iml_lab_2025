@@ -1,6 +1,5 @@
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
-
 from sklearn.datasets import load_iris
 
 iris = load_iris(as_frame=True)
@@ -25,11 +24,14 @@ loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)
 print(f'-tf.math.log(1/3)={-tf.math.log(1/3)}')
 print(f'loss_fn(y_train[:1], predictions).numpy()=\n{loss_fn(y_train[:1], predictions).numpy()}')
 
-model.compile(optimizer='adam',
+optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
+
+model.compile(optimizer=optimizer,
               loss=loss_fn,
               metrics=['accuracy'])
 
-model.fit(X_train, y_train, epochs=50)
+model.fit(X_train, y_train, epochs=25)
 
 print(f'---EVALUATION---\n={model.evaluate(X_test, y_test, verbose=2)}')
 
+model.save('tensorflow_model.keras')

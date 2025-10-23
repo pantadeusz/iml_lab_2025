@@ -1,4 +1,5 @@
 Wnioski:
-- RadnomForest w naszym przypadku daje idealne wyniki
-- Tensorflow daje rózne wyniki i trzeba ustawiać niższy learning rate
-- Model RandomForest zajmuje mniej miejsca niż neurony
+- Wybrałem dataset Iris 
+- Model RandomForest, w naszym przypadku, osiągnął 100% dokładności 
+- Model TensorFlow uzyskał dokładność 60-80% po 25 epokach z optymizatorem Adam z learning_rate 0.001
+- Plik modelu TensorFlow jest znacznie mniejszy (27 KB) w porównaniu z plikiem modelu RandomForest (187 KB).
