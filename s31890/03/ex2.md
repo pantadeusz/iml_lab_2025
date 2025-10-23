@@ -1,52 +1,59 @@
-## Dla zbalansowanych danych o następujących argumentach:
-```
-make_classification(
-    n_samples=1000,
-    n_features=20,
-    n_informative=2,
-    n_redundant=10,
-    n_clusters_per_class=1,
-    flip_y=0,
-    random_state=1
-)
-```
-### Wynik:
-ROC:
-Logistic Regression: AUC = 0.95
-Random Forest: AUC = 0.97
-SVM: AUC = 0.97
+=== Imputation: Mean || Missing 5.0% ===
+MSE:  3173.825
+RMSE: 56.337
+MAE:  45.155
+R²:   0.401
 
-Precision-Recall:
-Logistic Regression: AUC = 0.95
-Random Forest: AUC = 0.97
-SVM: AUC = 0.96
+=== Imputation: KNN || Missing 5.0% ===
+MSE:  3196.401
+RMSE: 56.537
+MAE:  45.250
+R²:   0.397
 
-## Dla niezbalansowanych danych o następujących argumentach:
-```
-make_classification(
-    n_samples=1000,
-    n_features=20,
-    n_informative=2,
-    n_redundant=10,
-    n_clusters_per_class=1,
-    weights=[0.9, 0.1],
-    flip_y=0,
-    random_state=1
-)
-```
-### Wynik:
-ROC:
-Logistic Regression: AUC = 0.97
-Random Forest: AUC = 0.96
-SVM: AUC = 0.94
+=== Imputation: MICE || Missing 5.0% ===
+MSE:  2801.843
+RMSE: 52.932
+MAE:  42.942
+R²:   0.471
 
-Precision-Recall:
-Logistic Regression: AUC = 0.89
-Random Forest: AUC = 0.91
-SVM: AUC = 0.90
+=== Imputation: Mean || Missing 10.0% ===
+MSE:  3203.249
+RMSE: 56.597
+MAE:  44.156
+R²:   0.395
+
+=== Imputation: KNN || Missing 10.0% ===
+MSE:  3153.143
+RMSE: 56.153
+MAE:  44.455
+R²:   0.405
+
+=== Imputation: MICE || Missing 10.0% ===
+MSE:  2975.120
+RMSE: 54.545
+MAE:  43.237
+R²:   0.438
+
+=== Imputation: Mean || Missing 50.0% ===
+MSE:  4421.011
+RMSE: 66.491
+MAE:  52.265
+R²:   0.166
+
+=== Imputation: KNN || Missing 50.0% ===
+MSE:  4163.994
+RMSE: 64.529
+MAE:  53.135
+R²:   0.214
+
+=== Imputation: MICE || Missing 50.0% ===
+MSE:  4359.895
+RMSE: 66.030
+MAE:  53.585
+R²:   0.177
 
 ### Wniąski:
-Przy zbalansowanym zbiorze danych wyniki AUC nie różniły się mocno pomiędzy ROC a PR.
-Za to dla zbioru danych niezbalansowanych wyniki AUC różniły się pomiędzy ewaluacją ROC a PR. Wyniki ROC nie różniły się mocno pomiędzy zbalansowanym a nie zbalansowanym zbiorem danych.
 
-Udowadnia to, że ewaluacja metodą ROC jest odpowiednia tylko gdy dane są zbalansowane, natomiast gdy nie są należy zastosować PR.
+Wraz ze wzrostem odsetka brakujących danych, skuteczność predykcyjna wszystkich metod imputacji konsekwentnie spada.
+Spośród nich imputacja oparta na modelu (MICE) osiąga najlepszą dokładność w przypadku niskiego lub umiarkowanego poziomu braków, 
+natomiast imputacja KNN wykazuje większą odporność w przypadku ekstremalnej utraty danych.
