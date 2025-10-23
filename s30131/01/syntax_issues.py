@@ -16,3 +16,5 @@ print(filtered[arguments.column])
 
 plt.hist(filtered[arguments.column]); plt.xlabel("x"); plt.ylabel("y"); plt.savefig("histogram.png")
 
+
+

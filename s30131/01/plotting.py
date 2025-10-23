@@ -10,3 +10,4 @@ plt.title('Średnia bmi do wieku')
 plt.xlabel('Wiek')
 plt.ylabel('Średnie Bmi')
 plt.savefig('insurance.png')
+
