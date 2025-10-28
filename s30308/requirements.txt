@@ -3,3 +3,4 @@ matplotlib
 jupyter
 kagglehub
 scikit-learn
+imblearn

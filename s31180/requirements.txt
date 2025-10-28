@@ -1,5 +1,3 @@
 pandas
 matplotlib
 jupyter
-numpy
-scikit-learn
