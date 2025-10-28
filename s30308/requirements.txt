@@ -3,3 +3,7 @@ matplotlib
 jupyter
 kagglehub
 scikit-learn
+torch
+torchvision
+tensorflow
+keras

@@ -4,7 +4,9 @@
 Tutorial:
 https://machinelearningmastery.com/develop-your-first-neural-network-with-pytorch-step-by-step/
 
-Budowa sieci neuronowej:
+============================================================================
+
+Budowa sieci neuronowej
 
 Pierwszą rzeczą, którą należy zrobić, aby uzyskać prawidłowy wynik, jest upewnienie się,
 że pierwsza warstwa ma prawidłową liczbę cech wejściowych. W tym przykładzie można określić wymiar wejściowy (Input) 8
@@ -30,10 +32,12 @@ Przygotowanie do treningu
 Kiedy już zdefiniowaliśmy model wystarczy go wytrenować, ale musimy ocenić cel szkolenia.
 Chcemy, aby model sieci neuronowej generował wynik jak najbardziej zbliżony do y. Szkolenie sieci oznacza znalezienie
 najlepszego zestawu wag do mapowania danych wejściowych na dane wyjściowe w zbiorze danych.
+
 Funkcja straty jest miarą odległości prognozy od y. W tym przykładzie należy użyć binarnej entropii krzyżowej,
 ponieważ jest to problem klasyfikacji binarnej (0/1).
 
-todo dokończyć pytorch + tenserflow
+Kiedy zdecydujemy funkcję straty potrzebny jest optymalizator. Jest to algorytm, który aktualizuje wagi sieci na
+podstawie gradientów (czyli kierunku, w którym trzeba „zejść” po powierzchni błędu, żeby znaleźć minimum straty).
 
 ------------------------------------------------------------------------------------------------------------------------
 
@@ -45,24 +49,71 @@ Dzięki temu:
 - Model wprowadza nieliniowość (niezbędną do nauki złożonych wzorców),
 - Obliczenia pozostają proste i szybkie.
 
+------------------------------------------------------------------------------------------------------------------------
+
+Binarna entropia krzyżowa (ang. binary cross-entropy, BCE) to funkcja straty wykorzystywana w uczeniu modeli
+klasyfikacji binarnej – czyli wtedy, gdy wynik może być 0 albo 1. W praktyce mierzy,
+jak bardzo przewidywania modelu różnią się od rzeczywistych etykiet. Funkcja działa tak, że karze mocniej wyniki
+dalsze od zamierzonego.
+Przykład:
+Jeśli rzeczywista etykieta to 1, a model prawdopodobieństwo przewiduje 0.9, to model jest prawie pewny i ma rację,
+więc kara (czyli strata) będzie bardzo mała.
+Ale jeśli przewidzi 0.49, to oznacza, że jest prawie niepewny — czyli połowicznie myśli, że to 1,
+a połowicznie że to 0 — więc kara będzie znacznie większa.
 
 ------------------------------------------------------------------------------------------------------------------------
+
+Optymalizator Adam - (skrót od Adaptive Moment Estimation)to jeden z najpopularniejszych i najskuteczniejszych
+optymalizatorów w uczeniu sieci neuronowych. Działa bardzo dobrze, ale ma problemy — zwłaszcza przy dużych
+zbiorach danych i skomplikowanych krajobrazach błędu.
+
+Jak mniej więcej działa?
+Adam dynamicznie dostosowuje krok uczenia się dla każdej wagi osobno, wykorzystując średnią z gradientów i ich kwadratów.
+
+============================================================================
+
+Trenowanie modelu
+
+Po przygotowaniu model możemy zabrać się za trenowanie. Proces trenowania odbywa się epokach i batchach
+
+Epoch - jedno przejście całego zbioru danych treningowych przez model
+
+Batch - zbiór próbek treningowych, które model przetwarza jednocześnie w jednej iteracji aktualizacji wag.
+Uczenie na całym zbiorze (tzw. Batch Gradient Descent) byłoby bardzo dokładne, ale wolne i pamięciożerne —
+szczególnie przy milionach przykładów. Dlatego stosuje się mniejsze partie
+
+Rozmiar partii jest ograniczony przez pamięć systemu. Ponadto liczba wymaganych obliczeń jest
+liniowo proporcjonalna do rozmiaru partii. Całkowita liczba partii w wielu epokach to liczba uruchomień
+algorytmu gradientu prostego w celu udoskonalenia modelu.
+Jest to kompromis – potrzeba więcej iteracji algorytmu gradientu prostego, aby uzyskać lepszy model,
+ale jednocześnie nie chcemy, aby ukończenie treningu trwało zbyt długo.
+Liczbę epok i rozmiar partii można dobrać eksperymentalnie metodą prób i błędów.
+
+
+============================================================================
+
+Ewaluacja modelu
+
+To etap sprawdzania, jak dobrze działa wytrenowany model na danych,
+których nie widział podczas treningu (czyli na danych testowych lub walidacyjnych).
+Celem jest sprawdzenie, czy model nauczył się uogólniać, a nie tylko zapamiętywać dane treningowe.
+
+
+============================================================================
+
+
 
 """
 
 import kagglehub
-import os
 import torch
 from torch import nn
 import pandas as pd
-from torch.utils.data import DataLoader
-from torchvision import datasets, transforms
+import torch.optim as optim
 
 # Download latest version
 path = kagglehub.dataset_download("uciml/pima-indians-diabetes-database")
-print(path)
 data = pd.read_csv(path + "/diabetes.csv")
-print(data.columns)
 
 
 # Dzielimy na atrybuty i etykiety
@@ -91,5 +142,29 @@ class PimaClassifier(nn.Module):
         return x
 
 model = PimaClassifier()
-print(model)
 
+loss_fn = nn.BCELoss()  # binary cross entropy
+optimizer = optim.Adam(model.parameters(), lr=0.001) # w pierwszy argumencie podajemy co optymalizujemy (czyli model)
+
+n_epochs = 300
+batch_size = 10
+
+for epoch in range(n_epochs):
+    for i in range(0, len(X), batch_size): #range(start, stop, step
+        X_batch = X[i: i + batch_size] # slicing - od końca starego batch'a do końca nowego
+        y_pred = model(X_batch) # funkcja model automatycznie wywołuje forward()
+        y_batch = y[i:i + batch_size] # pobieramy etykiety do obliczenia funkcji straty
+        loss = loss_fn(y_pred, y_batch)
+        optimizer.zero_grad() # zerujemy gradient, aby się nie sumował wraz z kolejnymi iteracjami
+        loss.backward() # obliczanie gradientu (pochodne)
+        optimizer.step() # Optymalizator (tu: Adam) wykonuje aktualizację wag na podstawie gradientów obliczonych w poprzednim kroku.
+                         # Bez tego model się nie będzie uczyć
+
+    print(f'Finished epoch {epoch}, latest loss {loss}')
+
+# compute accuracy (no_grad is optional)
+with torch.no_grad():
+    y_pred = model(X)
+
+accuracy = (y_pred.round() == y).float().mean()
+print(f"Accuracy {accuracy}")
