@@ -1,0 +1,2 @@
+Generalnie MICE wypada najlepiej. MICE > KNN > MEAN
+W przypadku zwyczajnego usuwania wierszy, gdzie nie ma wartości może nastąpić pokaźne zmniejszenie skuteczności modelu. Przy większych brakach danych regresja liniowa osiąga znacznie większe wartości funkcji kosztu.
