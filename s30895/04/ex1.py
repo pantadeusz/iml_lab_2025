@@ -18,7 +18,14 @@ def prepare_data(data):
     df = pd.concat([data.data.features, data.data.targets], axis=1)
     df['income'] = df['income'].str.strip().str.replace('.', '', regex=False)
 
-    print("Columns:", df.columns)
+    # print("Columns:", df.columns)
+
+    df = df.replace('?', np.nan)
+    categorical_cols = df.select_dtypes(include=['object']).columns
+    numeric_cols = df.select_dtypes(include=['int64', 'float64']).columns
+
+    df[categorical_cols] = df[categorical_cols].fillna('Unknown')
+    df[numeric_cols] = df[numeric_cols].fillna(df[numeric_cols].median())
 
     label_encoder = LabelEncoder()
     df['income'] = label_encoder.fit_transform(df['income'])
@@ -47,7 +54,7 @@ def prepare_data(data):
     X = df_final.drop('income', axis=1)
     y = df_final['income']
 
-    print("Unique y values:", y.unique())
+    # print("Unique y values:", y.unique())
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.3, stratify=y, random_state=42
@@ -103,7 +110,6 @@ def plot_accuracy_and_validation(history):
 
 
 data = fetch_ucirepo(id=2)
-df = pd.concat([data.data.features, data.data.targets], axis=1)
 
 X_train_encoded,X_test_encoded, y_train_encoded, y_test_encoded = prepare_data(data)
 
@@ -126,7 +132,6 @@ model.compile(
     optimizer='adam',
     loss='binary_crossentropy',
     metrics=['accuracy', 'precision', 'recall']
-
 )
 
 early_stop = EarlyStopping(
