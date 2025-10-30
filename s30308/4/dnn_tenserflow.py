@@ -10,8 +10,6 @@ data = pd.read_csv(path + "/diabetes.csv")
 
 print(data.shape)
 
-exit(0)
-
 # Podział na cechy i etykiety
 X = data.drop('Outcome', axis=1).values
 y = data['Outcome'].values
