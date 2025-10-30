@@ -1,6 +1,6 @@
 pandas
 matplotlib
 jupyter
-numpy
+kagglehub
 scikit-learn
-tensorflow
+imblearn

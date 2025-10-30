@@ -1,0 +1,1 @@
+Widać wyraźnie, że znacznie bardziej skomplikowany model (sieć neuronowa) wypada bardzo podobnie do RandomForesta. Bardzo możliwe, że wynika to z tego, że zbiór danych jest dosyć prosty i niewielki.
