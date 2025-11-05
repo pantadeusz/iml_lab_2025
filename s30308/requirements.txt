@@ -8,3 +8,4 @@ torchvision
 tensorflow
 keras
 keras_tuner
+imblearn
