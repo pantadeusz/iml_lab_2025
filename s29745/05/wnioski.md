@@ -54,5 +54,21 @@ Ze względu na charakterystykę wybranego przeze mnie zbioru dane musiały być 
 | **Macro avg**    | 0.8068    | 0.7768 | 0.7899   | 9769    |
 | **Weighted avg** | 0.8490    | 0.8542 | 0.8505   | 9769    |
 
+### Model z najlepszymi parametrami
+| Parametr / metryka         |            Wartość |
+| -------------------------- | -----------------: |
+| units_1                    |                224 |
+| dropout_1                  |                0.4 |
+| units_2                    |                176 |
+| dropout_2                  |                0.1 |
+| learning_rate              |             0.0005 |
+| val_auc (score na tunerze) | 0.9136480689048767 |
+| Test Accuracy (DNN)        |             0.8566 |
+| Test Precision (DNN)       |             0.7286 |
+| Test Recall (DNN)          |             0.6386 |
+| Test F1 (DNN)              |             0.6806 |
+| Test ROC AUC (DNN)         |             0.9098 |
+
+
 ### Wnioski
 Oba modele osiągnęły podobne wyniki. Nie udało mi się sprawić, aby DNN wykazał przewagę nad RanfomForest. Prawdopodobnie wynika to z charakterystyki datasetu, ponieważ w gruncie rzeczy jest to dataset tabelaryczny, w których RandomForest radzi sobie dobrze. Eksperymentowanie z parametrami autotunera przynosiły zmiany na poziomie na tyle znikomym, że nie jest to warte notowania.

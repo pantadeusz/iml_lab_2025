@@ -169,6 +169,8 @@ def build_dnn_and_evaluate(X_train, X_test, y_train, y_test):
     tuner.results_summary(1)
 
     best_model = tuner.get_best_models(num_models=1)[0]
+    best_hps = tuner.get_best_hyperparameters(num_trials=1)[0]
+    print(best_hps.values)
 
     y_pred_probs = best_model.predict(X_test).ravel()
     y_pred = (y_pred_probs > 0.5).astype(int)
