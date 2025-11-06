@@ -1,5 +1,5 @@
 .DS_Store
-.lab_env/
+lab_env/
 .idea/
 *.png
 *.jpg
