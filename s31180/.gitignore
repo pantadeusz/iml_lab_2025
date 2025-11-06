@@ -1,0 +1,7 @@
+.DS_Store
+.lab_env/
+.idea/
+*.png
+*.jpg
+*.jpeg
+*.csv
