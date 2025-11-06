@@ -38,82 +38,16 @@ oraz czasem wykonania.
 | 50    | 5          | 2                    |
 
 
-### WYNIKI OSTATNIEGO TESTU
-
-#### Model Random Forest Classifier
-**Classification Report**
-```json
-{
-   "0":{
-      "precision":0.9114077669902912,
-      "recall":0.93875,
-      "f1-score":0.9248768472906403,
-      "support":800.0
-   },
-   "1":{
-      "precision":0.9149305555555556,
-      "recall":0.8783333333333333,
-      "f1-score":0.8962585034013606,
-      "support":600.0
-   },
-   "accuracy":0.9128571428571428,
-   "macro avg":{
-      "precision":0.9131691612729234,
-      "recall":0.9085416666666666,
-      "f1-score":0.9105676753460005,
-      "support":1400.0
-   },
-   "weighted avg":{
-      "precision":0.9129175335182618,
-      "recall":0.9128571428571428,
-      "f1-score":0.9126118427666633,
-      "support":1400.0
-   }
-}
-```
-**Confusion Matrix:**
-
-| **751** | **49**  |
-|---------|---------|
-| **73**  | **527** |
-
+### Struktura najlepszego modelu
 
 #### Best Neural Network Model
-**Classification Report** 
-```json
-{
-   "0":{
-      "precision":0.96,
-      "recall":0.96,
-      "f1-score":0.96,
-      "support":800.0
-   },
-   "1":{
-      "precision":0.9466666666666667,
-      "recall":0.9466666666666667,
-      "f1-score":0.9466666666666667,
-      "support":600.0
-   },
-   "accuracy":0.9542857142857143,
-   "macro avg":{
-      "precision":0.9533333333333334,
-      "recall":0.9533333333333334,
-      "f1-score":0.9533333333333334,
-      "support":1400.0
-   },
-   "weighted avg":{
-      "precision":0.9542857142857143,
-      "recall":0.9542857142857143,
-      "f1-score":0.9542857142857143,
-      "support":1400.0
-   }
-}
-```
-**Confusion Matrix:**
 
-| **768** | **32**  |
-|---------|---------|
-| **32**  | **568** |
+| Layer (type)  | Output Shape | Param # |
+|---------------|--------------|---------|
+| Tanh          | (None, 416)  | 19,552  |
+| Tanh          | (None, 352   | 146,784 |
+| Dropout(0.25) | (None,352)   | 0       |
+| Sigmoid       | (None,1)     | 353     |
 
 ### Wnioski
 Tuner to naprawdę potężne narzędzie, dzięki któremu
