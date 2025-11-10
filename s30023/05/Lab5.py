@@ -5,12 +5,15 @@ from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import load_iris
 
-def load_data(test_size=0.2, random_state=42):
+def load_data(random_state=42):
     iris = load_iris(as_frame=True)
     print(iris.data.columns)
     X = iris.data
     y = iris.target
-    return train_test_split(X, y, test_size=test_size, random_state=random_state)
+
+    X_tr, X_test, y_tr, y_test = train_test_split(X, y, test_size=0.2, random_state=random_state)
+    X_train, X_val, y_train, y_val = train_test_split(X_tr, y_tr, test_size=0.25, random_state=random_state)
+    return X_train, X_val, X_test, y_train, y_val, y_test
 
 
 def build_model(hp, input_shape=(4,), output_units=3):
@@ -65,7 +68,7 @@ def save_model(model, path='tensorflow_model.keras'):
 
 
 def main():
-    X_train, X_test, y_train, y_test = load_data()
+    X_train, X_val, X_test, y_train, y_val, y_test = load_data()
 
     tuner = kt.RandomSearch(
         hypermodel=build_model,
@@ -82,7 +85,7 @@ def main():
     best_hyper_param = tuner.get_best_hyperparameters(1)[0]
     model = build_model(best_hyper_param)
 
-    model.fit(X_train, y_train, epochs=10, validation_data=(X_test, y_test))
+    model.fit(X_train, y_train, epochs=10, validation_data=(X_val, y_val))
 
     print(
         f"""
