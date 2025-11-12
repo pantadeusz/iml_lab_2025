@@ -1,3 +1,4 @@
+import os
 import sys
 
 import keras
@@ -33,13 +34,24 @@ def prepare_dataset(dataset, batch_size=32, img_size=(128,128), shuffle=False):
 def create_model(input_shape, initializer='glorot_uniform', activation='relu', optimizer='adam'):
     model = keras.Sequential([
         keras.layers.Flatten(input_shape=input_shape),
-        keras.layers.Dense(128, activation=activation),
+        keras.layers.Dense(128, activation=activation, initializer=initializer),
         keras.layers.Dense(64, activation=activation),
         keras.layers.Dense(32, activation=activation),
         keras.layers.Dense(3, activation='softmax')
     ])
     model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     return model
+
+def save_model(model, path):
+    extension = ".keras"
+    counter = 1
+    save_model_path = f"{path}{extension}"
+
+    while os.path.exists(save_model_path):
+        save_model_path = f"{path}_{counter}{extension}"
+        counter += 1
+
+    model.save(save_model_path)
 
 def main():
     if len(sys.argv) > 1:
@@ -64,6 +76,9 @@ def main():
     y_true = np.concatenate([y.numpy() for x, y in test_ds], axis=0)
     y_pred = np.argmax(model.predict(test_ds), axis=1)
     print(classification_report(y_true, y_pred))
+
+    save_model(model, f"./models/v1_{epochs}")
+
 
 if __name__ == "__main__":
     main()
