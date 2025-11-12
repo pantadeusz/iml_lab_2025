@@ -1,4 +1,6 @@
-from tensorflow.keras import layers
+import keras
+from keras import layers
+import tensorflow as tf
 import tensorflow_datasets as tfds
 
 def prepare_dataset():
@@ -29,14 +31,21 @@ def preprocess(image, label):
 def create_model(initializer='glorot_uniform', activation='relu', optimizer='adam'):
     model = keras.Sequential([
         layers.Input(shape=(128,128,3)),
+        layers.Flatten(),
+        layers.Dense(256, activation),
+        layers.Dense(128, activation),
+        layers.Dense(3, keras.activations.softmax)
         
-    ])
+    ], name="beans_model")
+
     model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
     return model
 
 
 def main():
     train_ds, val_ds, test_ds = prepare_dataset()
+    create_model()
 
 if __name__ == "__main__":
     main()
