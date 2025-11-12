@@ -2,6 +2,8 @@ import keras
 from keras import layers
 import tensorflow as tf
 import tensorflow_datasets as tfds
+from sklearn.metrics import accuracy_score, f1_score, classification_report
+import numpy as np
 
 def prepare_dataset():
     # 1. Wczytanie danych z tensorflow
@@ -43,9 +45,35 @@ def create_model(initializer='glorot_uniform', activation='relu', optimizer='ada
     return model
 
 
+def evaluate_model_text(model, dataset, class_names):
+    # Pobranie wszystkich obrazów i etykiet z dataset
+    y_true = []
+    y_pred = []
+
+    for images, labels in dataset:
+        preds = model.predict(images)
+        pred_labels = np.argmax(preds, axis=1)
+        y_true.extend(labels.numpy())
+        y_pred.extend(pred_labels)
+
+    y_true = np.array(y_true)
+    y_pred = np.array(y_pred)
+
+    print("\nClassification report:\n")
+    print(classification_report(y_true, y_pred, target_names=class_names))
+
+
 def main():
     train_ds, val_ds, test_ds = prepare_dataset()
-    create_model()
+    model = create_model()
+
+    model.fit(train_ds, epochs=30, validation_data=val_ds)
+    model.evaluate(test_ds)
+
+    class_names = ["angular_leaf_spot", "bean_rust", "healthy"]
+    evaluate_model_text(model, test_ds, class_names)
+
+
 
 if __name__ == "__main__":
     main()
