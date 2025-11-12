@@ -8,7 +8,7 @@ from sklearn.metrics import roc_auc_score
 from matplotlib import pyplot as plt
 import numpy as np
 
-threshold = 0.9
+threshold = 0.2
 
 def prepare_data(threshold_gap):
     # Załaduj dane
