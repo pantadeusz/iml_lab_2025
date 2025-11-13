@@ -22,19 +22,20 @@ def load_data():
 
     batch_size = 32
 
-    ds_train = ds_train.map(image_normalization, num_parallel_calls=tf.data.AUTOTUNE)
-    ds_train = ds_train.cache().shuffle(1000).batch(batch_size).prefetch(tf.data.AUTOTUNE)
+    ds_train = ds_train.map(image_normalization)
+    ds_train = ds_train.batch(batch_size)
 
-    ds_val = ds_val.map(image_normalization, num_parallel_calls=tf.data.AUTOTUNE)
-    ds_val = ds_val.batch(batch_size).cache().prefetch(tf.data.AUTOTUNE)
+    ds_val = ds_val.map(image_normalization)
+    ds_val = ds_val.batch(batch_size)
 
-    ds_test = ds_test.map(image_normalization, num_parallel_calls=tf.data.AUTOTUNE)
-    ds_test = ds_test.batch(batch_size).cache().prefetch(tf.data.AUTOTUNE)
+    ds_test = ds_test.map(image_normalization)
+    ds_test = ds_test.batch(batch_size)
 
     return ds_train, ds_val, ds_test, ds_info
 
 def build_model(hp, input_shape=(IMG_SIZE, IMG_SIZE, 3), output_units=3):
     model = tf.keras.Sequential()
+
     model.add(tf.keras.Input(shape=input_shape))
     model.add(tf.keras.layers.Flatten())
 
@@ -96,7 +97,7 @@ def evaluate_model(model, test_ds, target_names):
 
     # prawdziwe etykiety z obiektu Dataset
     y_test = np.concatenate([y for x, y in test_ds], axis=0)
-    print('y_test: \n', y_test)
+    # print('y_test: \n', y_test)
 
     print(
         f"""
