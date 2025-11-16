@@ -4,18 +4,19 @@ from PIL import Image
 import argparse
 import keras
 
+
 def load_and_preprocess_image(image_path, target_size=(500, 500)):
     img = Image.open(image_path)
-    
+
     if img.mode != 'RGB':
         img = img.convert('RGB')
-    
+
     img = img.resize(target_size)
-    
-    img_array = np.array(img) / 255.0
-    
+
+    img_array = np.array(img, dtype=np.uint8)
+
     img_array = np.expand_dims(img_array, axis=0)
-    
+
     return img_array
 
 def classify_image(model_path, image_path, class_names=None):
