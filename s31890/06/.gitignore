@@ -3,3 +3,5 @@
 *.jpg
 *.jpeg
 __pycache__/*
+*.keras
+tuner_cache/*
