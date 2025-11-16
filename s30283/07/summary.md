@@ -37,9 +37,14 @@ W tym przypadku zmniejszona została liczba epok do max **150**, różnie dla po
 **Historia dokładności treningowej i walidacyjnej w przypadku modelu o najmniejszym rozmiarze.**
 ![Training with normalization](https://i.imgur.com/3LlJjOp.png)
 
-> Udało się znacznie wygładzić, ustabilizować trening dzięki warstwie normalizacyjnej. 
+**Historia tego samego modelu po dodaniu regularyzacji L2 w pierwszej i drugiej warstwie.**
+![Training with regularization](https://i.imgur.com/Vk9PDGe.png)
 
->Wartości poszczególnych dokładności walidacyjnych testowanych modeli wachały się cały czas pomiędzy 94-100%.
+> Udało się znacznie wygładzić, ustabilizować trening dzięki warstwie normalizacyjnej oraz regularyzacji L2. 
+
+> Poszukiwania modelu sieci neuronowej o takiej samej 100% dokładności walidacyjnej, ale o mniejszym rozmiarze zakończyły się sukcesem. Udało się znaleźć model o rozmiarze 33 bajtów.
+
+>Wartości poszczególnych dokładności walidacyjnych testowanych powyższych modeli wachały się cały czas pomiędzy 94-100%.
 
 **Weryfikujący zrzut ekranu.**
 

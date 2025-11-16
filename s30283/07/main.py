@@ -31,12 +31,18 @@ def create_and_evaluate_rf_model(X_train, X_val, y_train, y_val):
 def create_and_evaluate_nn_model(X_train, X_val, y_train, y_val, first_layer_units, second_layer_units, epochs):
     y_train = y_train - 1
     y_val = y_val - 1
+    l2_regularization = tf.keras.regularizers.l2(0.01)
     normalization_layer = tf.keras.layers.Normalization()
     normalization_layer.adapt(X_train)
     model = tf.keras.Sequential([
         normalization_layer,
-        tf.keras.layers.Dense(first_layer_units, activation='relu', input_shape=(X_train.shape[1],)),
-        tf.keras.layers.Dense(second_layer_units, activation='relu'),
+        tf.keras.layers.Dense(first_layer_units, 
+                              activation='relu', 
+                              input_shape=(X_train.shape[1],),
+                              kernel_regularizer=l2_regularization),
+        tf.keras.layers.Dense(second_layer_units, 
+                              activation='relu',
+                              kernel_regularizer=l2_regularization),
         tf.keras.layers.Dense(3, activation='softmax')
     ])
     optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
