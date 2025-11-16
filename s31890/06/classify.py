@@ -4,7 +4,7 @@ from PIL import Image
 import argparse
 import keras
 
-def load_and_preprocess_image(image_path, target_size=(548, 548)):
+def load_and_preprocess_image(image_path, target_size=(500, 500)):
     img = Image.open(image_path)
     
     if img.mode != 'RGB':
