@@ -6,3 +6,4 @@ imbalanced-learn
 tensorflow
 keras-tuner
 tensorflow-datasets
+pillow

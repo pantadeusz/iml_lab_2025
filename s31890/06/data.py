@@ -47,35 +47,46 @@ def compute_class_weights(dataset):
     weights = {cls: total / (len(counts) * count) for cls, count in counts.items()}
     return counts, weights
 
-def plot_tuner_results(tuner, plot_filename="tuner_iterations_plot.png", csv_filename="tuner_trials_summary.csv", num_trials=None):
+def plot_tuner_results(
+    tuner,
+    plot_filename="tuner_iterations_plot.png",
+    csv_filename="tuner_trials_summary.csv",
+    num_trials=None
+):
+    if num_trials is None:
+        num_trials = len(tuner.oracle.trials)
+
     all_trials = tuner.oracle.get_best_trials(num_trials=num_trials)
-    
-    trial_numbers = [trial.number for trial in all_trials]
+
+    trial_ids = [trial.trial_id for trial in all_trials]
     objective_values = [trial.score for trial in all_trials]
-    
+
+    trial_numbers = [int(tid) for tid in trial_ids]
+
+    # Plot
     plt.figure(figsize=(12, 6))
-    plt.plot(trial_numbers, objective_values, marker='o', linestyle='-', color='b')
-    plt.title(f'Keras Tuner: Trial Performance Over Time (Total Trials: {len(all_trials)})')
-    plt.xlabel('Trial Number')
+    plt.plot(trial_numbers, objective_values, marker='o', linestyle='-')
+    plt.title(f'Keras Tuner: Trial Performance (Total Trials: {len(all_trials)})')
+    plt.xlabel('Trial ID')
     plt.ylabel('Validation Accuracy')
-    plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+    plt.grid(True, linestyle='--', linewidth=0.5)
     plt.tight_layout()
-    
     plt.savefig(plot_filename)
     plt.close()
-    
+
+    # Save CSV summary
     trial_data = []
     for trial in all_trials:
         trial_data.append({
-            'Trial Number': trial.number,
+            'Trial ID': trial.trial_id,
             'Score': trial.score,
             'Hyperparameters': trial.hyperparameters.values
         })
-    
+
     df = pd.DataFrame(trial_data)
     df.to_csv(csv_filename, index=False)
-    
-    print(f"✅ Detailed trial summary saved to '{csv_filename}'")
-    print(f"✅ Performance plot saved to '{plot_filename}'")
-    print(f"📊 Total number of trials analyzed: {len(all_trials)}")
+
+    print(f"Detailed trial summary saved to '{csv_filename}'")
+    print(f"Performance plot saved to '{plot_filename}'")
+    print(f"Total number of trials analyzed: {len(all_trials)}")
 

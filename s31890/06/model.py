@@ -2,7 +2,7 @@ import keras
 
 def create_model_with_params(
     hp,
-    input_shape=(224, 224, 3),
+    input_shape,
     num_classes=3,
     num_conv_blocks=2,
     conv_filters=[32, 64, 128],
