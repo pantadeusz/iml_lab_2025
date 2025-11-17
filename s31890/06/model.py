@@ -16,7 +16,7 @@ def create_model_with_params(
     optimizer='adam'
 ):
     """
-    Creates a flexible model with hyperparameters controlled by Keras Tuner.
+    Creates a semi flexible model compatible with keras tuner.
     
     Args:
         hp: HyperParameters object from Keras Tuner
@@ -81,7 +81,7 @@ def create_model_with_params(
         opt = keras.optimizers.Adam(learning_rate=learning_rate)
 
     model.compile(
-        optimizer=opt,
+        optimizer=opt, # Lsp can be wrong here because the compile method seems to mislead with its parameters. It can take the optimizer object
         loss='sparse_categorical_crossentropy',
         metrics=['accuracy']
     )

@@ -5,7 +5,7 @@ import tensorflow as tf
 
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
-# Set the device to CPU anyways because the gpu will run out of memory with 4gb of vram
+# Optionally set the device to CPU by disabnling GPU
 # tf.config.set_visible_devices([], 'GPU')
 
 train_ds, val_ds, test_ds, info = data.get_beans()
@@ -22,7 +22,6 @@ train_ds = train_ds.batch(BATCH_SIZE)
 val_ds = val_ds.batch(BATCH_SIZE)
 test_ds = test_ds.batch(BATCH_SIZE)
 
-# sample_shape_batch = (None,) + sample_shape
 
 def build_model(hp):
     return model.create_model_with_params(
@@ -51,6 +50,7 @@ tuner = kt.Hyperband(
     hyperband_iterations=2
 )
 
+# Do not search, because the models are already in the cache. Reload instead. If you wish to train change this line to search
 tuner.reload()
 
 best_model = tuner.get_best_models(num_models=1)[0]
@@ -61,4 +61,4 @@ best_model.save("best_tuner_model.keras")
 print("Best hyperparameters:")
 print(best_hps.values)
 
-data.plot_tuner_results(tuner, num_trials=len(tuner.oracle.trials))
+data.save_tuner_summary(tuner, num_trials=len(tuner.oracle.trials))

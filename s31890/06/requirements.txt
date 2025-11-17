@@ -7,3 +7,4 @@ tensorflow
 keras-tuner
 tensorflow-datasets
 pillow
+seaborn
