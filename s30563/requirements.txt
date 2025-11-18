@@ -6,3 +6,4 @@ scikit-learn
 tensorflow
 keras-tuner
 tensorflow_datasets
+ucimlrepo
