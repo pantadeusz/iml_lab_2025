@@ -1,10 +1,10 @@
 # Lab 08
 
-Dzisiejsze zadanie jest bardzo mocno oparte o przykład z wykładu. Bardzo zachęcam jednak do częściowo samodzielnego przygotowania rozwiazania.
+Dzisiejsze zadanie jest bardzo mocno oparte o przykład z wykładu. Bardzo zachęcam jednak do częściowo samodzielnego przygotowania rozwiązania.
 
 Jako bazę przyjmujemy
 
-* albo https://www.tensorflow.org/datasets/keras_example 
+* albo [TensorFlow Datasets Keras Example](https://www.tensorflow.org/datasets/keras_example) 
 * albo poprzednie rozwiązania.
 
 Wybór jest, ponieważ już coś podobnego trenowaliśmy i można wykorzystać swój wcześniejszy kod.
@@ -19,11 +19,11 @@ Zanotuj jak uczysz modele - liczba epok, rozmiar batch-a, algorytm uczenia. Te p
 
 Przyjmij jako baseline model wygenerowany albo Twoją dawniejszą metodą, albo wytrenowany na bazie przykładu z dokumentacji. Nie staraj się poprawiać - co wyszło to wyszło. Pamiętaj o zapisaniu modelu.
 
-Dodaj możliwość ponownej ewaluacji modelu dla nowych danych, to znaczy, przygotuj funkcję która dla danego modelu i danego zbioru danych (czy to np_array, czy dataset) obliczy metryki.
+Dodaj możliwość ponownej ewaluacji modelu dla nowych danych, to znaczy, przygotuj funkcję która dla danego modelu i danego zbioru danych (czy to np.array, czy dataset) obliczy metryki.
 
 ## 2
 
-Teraz przygotujemy mechanizm augmentacji (wzbogacania) danych. Zobacz https://www.tensorflow.org/tutorials/images/data_augmentation gdzie jest opisane jak można zwiększać różnorodność danych.
+Teraz przygotujemy mechanizm augmentacji (wzbogacania) danych. Zobacz [TensorFlow Data Augmentation Tutorial](https://www.tensorflow.org/tutorials/images/data_augmentation) gdzie jest opisane jak można zwiększać różnorodność danych.
 
 Nas interesuje przynajmniej:
 
@@ -43,11 +43,11 @@ Zastosuj augmentację do zbioru testowego i użyj go do oceny modelu "baseline".
 
 ## 4
 
-Naucz nowy model na danych z augmentacją. Zapisz go - będzie to nasz model o architekturze bazowego, ale nauczony na danych wzbogaconych. Oceń go stusjąc tą samą metodę co z poprzedniego punktu.
+Naucz nowy model na danych z augmentacją. Zapisz go - będzie to nasz model o architekturze bazowego, ale nauczony na danych wzbogaconych. Oceń go stosując tą samą metodę co z poprzedniego punktu.
 
 ## 5
 
-Stwórz nowy model - musi mieć te samo wejście i wyjście. Zastosuj warstwy konwolucyjne, max pooling i w pełni połączone. Możesz polegać na intuicji - nie będziemy robili optymalizacji hiperparameterów - nie zdążymy.
+Stwórz nowy model - musi mieć to samo wejście i wyjście. Zastosuj warstwy konwolucyjne, max pooling i w pełni połączone. Możesz polegać na intuicji - nie będziemy robili optymalizacji hiperparameterów - nie zdążymy.
 
 ## 6
 
