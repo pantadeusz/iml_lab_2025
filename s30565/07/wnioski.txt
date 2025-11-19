@@ -1,0 +1,113 @@
+Random Forest Classifier:
+              precision    recall  f1-score   support
+
+           1       1.00      1.00      1.00        14
+           2       1.00      1.00      1.00        14
+           3       1.00      1.00      1.00         8
+
+    accuracy                           1.00        36
+   macro avg       1.00      1.00      1.00        36
+weighted avg       1.00      1.00      1.00        36
+
+tak jak na stronce 100!
+
+wlasny model:
+dense 16, relu
+dense 8, relu
+dense 3, softmax
+              precision    recall  f1-score   support
+
+     Class 1       1.00      1.00      1.00        14
+     Class 2       1.00      1.00      1.00        14
+     Class 3       1.00      1.00      1.00         8
+
+    accuracy                           1.00        36
+   macro avg       1.00      1.00      1.00        36
+weighted avg       1.00      1.00      1.00        36
+
+druga iteracja po zmianie random state:
+              precision    recall  f1-score   support
+
+     Class 1       0.89      1.00      0.94         8
+     Class 2       0.93      0.93      0.93        15
+     Class 3       1.00      0.92      0.96        13
+
+    accuracy                           0.94        36
+   macro avg       0.94      0.95      0.94        36
+weighted avg       0.95      0.94      0.94        36
+
+widac ze model moze byc nauczony na pamiec.
+
+po dodaniu BatchNormalization po kazdej z warst ukrytych:
+dense 16, relu
+BatchNormalization
+dense 8, relu
+BatchNormalization
+dense 3, softmax
+              precision    recall  f1-score   support
+
+     Class 1       1.00      1.00      1.00        14
+     Class 2       1.00      1.00      1.00        13
+     Class 3       1.00      1.00      1.00         9
+
+    accuracy                           1.00        36
+   macro avg       1.00      1.00      1.00        36
+weighted avg       1.00      1.00      1.00        36
+
+wszystko na 100% ale to nie znaczy ze teraz jest perfekcyjny,
+danych jest mało wiec prawdopodobnie jest przeuczony i nauczony na pamiec.
+
+po dodaniu dropout po kazdej z warst ukrytych:
+dense 16, relu
+BatchNormalization
+dropout 0.3
+dense 8, relu
+BatchNormalization
+dropout 0.3
+dense 3, softmax
+              precision    recall  f1-score   support
+
+     Class 1       0.93      1.00      0.97        14
+     Class 2       1.00      0.93      0.96        14
+     Class 3       1.00      1.00      1.00         8
+
+    accuracy                           0.97        36
+   macro avg       0.98      0.98      0.98        36
+weighted avg       0.97      0.97      0.97        36
+mozliwe ze teraz jest blizej prawdy, lecz dalej jest niemal perfekcyjny
+
+teraz dodałem L2 i usunalem dropout:
+dense 16, relu, kernel_regularizer=regularizers.l2(0.001)
+BatchNormalization
+dense 8, relu, kernel_regularizer=regularizers.l2(0.001)
+BatchNormalization
+dense 3, softmax
+              precision    recall  f1-score   support
+
+     Class 1       1.00      0.92      0.96        13
+     Class 2       0.93      1.00      0.96        13
+     Class 3       1.00      1.00      1.00        10
+
+    accuracy                           0.97        36
+   macro avg       0.98      0.97      0.97        36
+weighted avg       0.97      0.97      0.97        36
+no widac ze juz nie jest perfekcyjnie, ale dalej nie wiadomo, malo danych
+
+teraz to samo ale zostawilem dropout:
+dense 16, relu, kernel_regularizer=regularizers.l2(0.001)
+BatchNormalization
+dropout 0.3
+dense 8, relu, kernel_regularizer=regularizers.l2(0.001)
+BatchNormalization
+dropout 0.3
+dense 3, softmax
+              precision    recall  f1-score   support
+
+     Class 1       0.92      0.85      0.88        13
+     Class 2       0.85      0.85      0.85        13
+     Class 3       0.91      1.00      0.95        10
+
+    accuracy                           0.89        36
+   macro avg       0.89      0.90      0.89        36
+weighted avg       0.89      0.89      0.89        36
+widocznie mniejsze wyniki, mozliwe ze blizsze prawdy
