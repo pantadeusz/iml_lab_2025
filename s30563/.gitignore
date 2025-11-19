@@ -15,7 +15,6 @@ __pycache__/
 
 # MacOS
 **/.DS_Store
-
 # Logs
 *.log
 
@@ -25,6 +24,7 @@ __pycache__/
 *.xls
 *.json
 *.png
+*.txt
 
 # Byte-compiled / optimized / DLL files
 *.so
@@ -38,3 +38,6 @@ build/
 dist/
 *.egg-info/
 .eggs/
+
+05/iti_dropout_tuning_/
+05/models
