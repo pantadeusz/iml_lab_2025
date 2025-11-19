@@ -41,6 +41,8 @@ Sprawdź czy działa - albo zapisz kilka losowych obrazków do plików (matplotl
 
 Zastosuj augmentację do zbioru testowego i użyj go do oceny modelu "baseline". Zanotuj jakie miał wyniki.
 
+UWAGA - normalnie tak się nie robi. Tutaj stosujemy to, aby zrobić eksperyment w którym sprawdzamy jak dobrze nasz model potrafi generalizować - nie tylko na nowych danych, ale dodatkowo jeszcze "pomieszanych".
+
 ## 4
 
 Naucz nowy model na danych z augmentacją. Zapisz go - będzie to nasz model o architekturze bazowego, ale nauczony na danych wzbogaconych. Oceń go stosując tą samą metodę co z poprzedniego punktu.
