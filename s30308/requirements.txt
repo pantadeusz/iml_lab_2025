@@ -9,3 +9,4 @@ tensorflow
 keras
 keras_tuner
 tensorflow_datasets
+imblearn
