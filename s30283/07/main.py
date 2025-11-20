@@ -57,7 +57,7 @@ def create_and_evaluate_nn_model(X_train, X_val, y_train, y_val, first_layer_uni
     print(accuracy_score(y_val, y_pred))
     model_filename = f'{first_layer_units}_{second_layer_units}_norm.keras'
     model.save(model_filename)
-    print(f'Model size: {os.path.getsize(model_filename) / 1024} bytes')
+    print(f'Model size: {os.path.getsize(model_filename) / 1024} kB')
     return history
 
 def plot_acc_history(history):

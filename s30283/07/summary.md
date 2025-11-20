@@ -1,7 +1,7 @@
 ### **Losowy Las**
 * **Liczba estymatorów:** 20
 * **Dokładność walidacyjna:** 1.0
-* **Rozmiar:** ~41 bajtów
+* **Rozmiar:** ~41 kilobajtów
 
 ### **Sieć Neuronowa**
 #### Początkowa sieć:
@@ -11,7 +11,7 @@
     * **Dense:** 3, Softmax
 * **Optimizer:** Adam (współczynnik uczenia: 0.001)
 * **Funkcja straty:** Sparse Categorical Crossentropy
-* **Rozmiar:** ~144 bajtów
+* **Rozmiar:** ~144 kilobajtów
 
 Trening odbywał się przez 300 epok na rozmiarze batcha równym 32.
 
@@ -42,7 +42,7 @@ W tym przypadku zmniejszona została liczba epok do max **150**, różnie dla po
 
 > Udało się znacznie wygładzić, ustabilizować trening dzięki warstwie normalizacyjnej oraz regularyzacji L2. 
 
-> Poszukiwania modelu sieci neuronowej o takiej samej 100% dokładności walidacyjnej, ale o mniejszym rozmiarze zakończyły się sukcesem. Udało się znaleźć model o rozmiarze 33 bajtów.
+> Poszukiwania modelu sieci neuronowej o takiej samej 100% dokładności walidacyjnej, ale o mniejszym rozmiarze zakończyły się sukcesem. Udało się znaleźć model o rozmiarze 33 kilobajtów.
 
 >Wartości poszczególnych dokładności walidacyjnych testowanych powyższych modeli wachały się cały czas pomiędzy 94-100%.
 
