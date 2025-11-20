@@ -1,11 +1,25 @@
 # Podsumowanie
 
-Dodanie warstwy normalizacyjnej bardzo polepsza wyniki i stabilizuje ich
+- Dodanie warstwy normalizacyjnej bardzo polepsza wyniki i stabilizuje ich
+- Dodanie Scaler pozwala zrobić model mniejszy i bardziej precyzyjny (zawsze wyniki 100%)
 
 # Waga plików
 
 - Random Forest: 215 KB
-- Neural Network (3 layers): 99 KB
+- Neural Network (3 layers): 68 KB
+
+# Random Forest
+```
+              precision    recall  f1-score   support
+
+           1       1.00      1.00      1.00        14
+           2       1.00      1.00      1.00        14
+           3       1.00      1.00      1.00         8
+
+    accuracy                           1.00        36
+   macro avg       1.00      1.00      1.00        36
+weighted avg       1.00      1.00      1.00        36
+```
 
 # Bez warstwy normalizacji
 ```
@@ -30,4 +44,16 @@ weighted avg       0.52      0.56      0.48        36
     accuracy                           0.97        36
    macro avg       0.98      0.98      0.98        36
 weighted avg       0.97      0.97      0.97        36
+```
+# Z warstwą normalizacji + Scaler
+```
+                      precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        14
+           1       1.00      1.00      1.00        14
+           2       1.00      1.00      1.00         8
+
+    accuracy                           1.00        36
+   macro avg       1.00      1.00      1.00        36
+weighted avg       1.00      1.00      1.00        36
 ```
