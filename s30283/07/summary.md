@@ -49,3 +49,7 @@ W tym przypadku zmniejszona została liczba epok do max **150**, różnie dla po
 **Weryfikujący zrzut ekranu.**
 
 ![Screen of models](https://i.imgur.com/E8jVoX2.png)
+
+**Wnioski**
+
+Udało się znaleźć model o liczbie unitów w pierwszej warstwie 20, drugiej 6, o rozmiarze 33 kilobajtów, który okazał tak samo skuteczny jak RandomForest o rozmiarze 41 kilobajtów i 20 estymatorach. Ten model sieci neuronowej ma mniejszy rozmiar równy 33 kB, czyli o 8 kB mniejszy niż lasu losowego. Dodatkowo regularyzacja doprowadziła do stabilniejszego uczenia oraz normalizacja do szybszego i wygładzonego uczenia.
