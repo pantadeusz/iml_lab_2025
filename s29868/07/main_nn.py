@@ -29,15 +29,15 @@ def create_model(input_shape=(13,), output_units=3):
     model = keras.Sequential([
         keras.Input(shape=input_shape),
 
-        keras.layers.Dense(16, activation="relu"),
+        keras.layers.Dense(16, activation="relu", kernel_regularizer=keras.regularizers.l2(0.001)),
         keras.layers.BatchNormalization(),
         keras.layers.Dropout(0.2),
 
-        keras.layers.Dense(8, activation="relu"),
+        keras.layers.Dense(8, activation="relu",kernel_regularizer=keras.regularizers.l2(0.001)),
         keras.layers.BatchNormalization(),
         keras.layers.Dropout(0.2),
 
-        keras.layers.Dense(4, activation="relu"),
+        keras.layers.Dense(4, activation="relu",kernel_regularizer=keras.regularizers.l2(0.001)),
         keras.layers.BatchNormalization(),
 
         keras.layers.Dense(output_units, activation="softmax")
