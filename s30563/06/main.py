@@ -60,6 +60,7 @@ def build_model(hp, input_shape):
             keras.layers.Dense(
                 units=hp.Int(f"units_{i+1}", min_value=16, max_value=512, step=32),
                 activation=hp.Choice("activation", activations),
+                kernel_initializer=hp.Choice("initializer", initializers),
             )
         )
 
