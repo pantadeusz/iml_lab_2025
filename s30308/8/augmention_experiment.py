@@ -4,6 +4,7 @@ import tensorflow as tf
 from keras import models
 import tensorflow_datasets as tfds
 from tensorflow.keras import layers
+import matplotlib.pyplot as plt
 
 
 def load_data():
@@ -23,44 +24,51 @@ def normalize_img(image, label):
     return tf.cast(image, tf.float32) / 255., label  # Musimy zmienić format
 
 
-def random_invert_img(x, p=0.5):
-  if  tf.random.uniform([]) < p:
-    x = (255-x)
-  return x
+def random_invert_pixel(x):
+    # Pobieramy wielkość batcha (np. 128)
+    batch_size = tf.shape(x)[0]
 
-def random_invert(factor=0.5):
-  return layers.Lambda(lambda x: random_invert_img(x, factor))
+    # Losujemy decyzje Tylko dla wymiaru batcha
+    # Kształt (batch_size, 1, 1, 1) sprawi, że ta sama decyzja
+    # zostanie z broadcastowa na wszystkie piksele danego obrazka.
+    random_decisions = tf.random.uniform((batch_size, 1, 1, 1))
+
+    # Aplikujemy warunek
+    return tf.where(random_decisions < 0.5, 1.0 - x, x)
+
 
 def augmentate_ds(ds):
     # Oryginalne obrazy 28 x 28
 
     data_augmentation = tf.keras.Sequential([
-        layers.RandomFlip("horizontal_and_vertical"),
-        layers.RandomRotation(0.2),
+        layers.RandomTranslation(height_factor=0.1, width_factor=0.01),
+        layers.RandomRotation(0.03),
+        layers.Lambda(random_invert_pixel)  # dodajemy funckję pomocniczą jako warstwe
     ])
 
-    random_invert = random_invert()
+    ds = ds.map(lambda x, y: (data_augmentation(x, training=True), y),
+                num_parallel_calls=tf.data.AUTOTUNE)
 
     return ds
 
 
-def prepare_data(augmentate=False):
+def prepare_data(augmentate_train=False, augmentate_test=False):
     (ds_train, ds_test), ds_info = load_data()
 
     ds_train = ds_train.map(normalize_img, num_parallel_calls=tf.data.AUTOTUNE)
     ds_train = ds_train.cache()  # cache'ujemy dla lepszej wydajności
     ds_train = ds_train.shuffle(ds_info.splits['train'].num_examples)
     ds_train = ds_train.batch(128)  # deklarujemy batcha po shuffle
-    ds_train = ds_train.prefetch(
-        tf.data.AUTOTUNE)  # dzięki temu kolejny batch będzie "czekał" w buforze - zwiększa wydajność
 
-    if augmentate:
-        ds_test = augmentate_ds(ds)
-    else:
-        ds_test = ds_test.map(normalize_img, num_parallel_calls=tf.data.AUTOTUNE)
-        ds_test = ds_test.batch(128)
-        ds_test = ds_test.cache()
-        ds_test = ds_test.prefetch(tf.data.AUTOTUNE)
+    if augmentate_train:
+        ds_train = augmentate_ds(ds_train)
+
+    ds_test = ds_test.map(normalize_img, num_parallel_calls=tf.data.AUTOTUNE)
+    ds_test = ds_test.batch(128)
+    ds_test = ds_test.cache()
+
+    if augmentate_test:
+        ds_test = augmentate_ds(ds_test)
 
     return ds_train, ds_test
 
@@ -80,10 +88,45 @@ def build_baseline_model():
     return model
 
 
-def train_baseline_model(ds_train, ds_test):
-    model = build_baseline_model()
-    model.fit(ds_train, epochs=10, validation_data=ds_test)
-    model.save("models/baseline_model.keras")
+def build_conv_model():
+    model = tf.keras.models.Sequential([
+        tf.keras.layers.Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(28, 28, 1)),
+        tf.keras.layers.MaxPooling2D((2, 2)),
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dense(10, activation='softmax')
+    ])
+
+    model.compile(
+        optimizer='adam',
+        loss='sparse_categorical_crossentropy',
+        metrics=[tf.keras.metrics.SparseCategoricalAccuracy(), ]
+    )
+
+    return model
+
+
+def show_augmented_imgs(ds):
+    # Pobierz jeden batch z potoku treningowego
+    image_batch, label_batch = next(iter(ds))
+
+    plt.figure(figsize=(10, 10))
+    for i in range(9):
+        ax = plt.subplot(3, 3, i + 1)
+        plt.imshow(image_batch[i].numpy().squeeze(), cmap='gray')
+        plt.axis("off")
+    plt.show()
+
+
+def train_model(ds_train, ds_test, path, conv=False):
+    show_augmented_imgs(ds_train)
+    if conv:
+        model = build_conv_model()
+    else:
+        model = build_baseline_model()
+
+    model.fit(ds_train, epochs=20, validation_data=ds_test)
+    model.save(path)
 
 
 def evaluate_model(model_path, ds_test):
@@ -93,13 +136,19 @@ def evaluate_model(model_path, ds_test):
     return loss, acc
 
 
+def experiment_with_augmentation(augmentate_train, augmentate_test, conv, path):
+    ds_train, ds_test = prepare_data(augmentate_train, augmentate_test)
+    train_model(ds_train, ds_test, path)
+    evaluate_model(path, ds_test)
+
+
 def main():
     # Stwórz katalog do przechowywania modeli
     os.makedirs("models", exist_ok=True)
 
-    ds_train, ds_test = prepare_data()
-    train_baseline_model(ds_train, ds_test)
-    evaluate_model("models/baseline_model.keras", ds_test)
+    experiment_with_augmentation(False,True, False,"models/baseline_model.keras")
+    experiment_with_augmentation(True, True, False,"models/augmentate_train_model.keras")
+    experiment_with_augmentation(True, True, True,"models/conv_model.keras")
 
 
 if __name__ == '__main__':
