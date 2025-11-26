@@ -121,6 +121,7 @@ def main():
     # NormalizedNeuralNetwork(128,64,50)
     # NormalizedNeuralNetwork(128,64,80)
 
+
     CheckModelAccuracy('RandomForest')
     CheckModelAccuracy('nn_basic')
     CheckModelAccuracy('nn_normalized_16_8_e50')
