@@ -1,166 +1,61 @@
 import tensorflow as tf
 import tensorflow_datasets as tfds
-from tensorflow import keras
-from tensorflow.keras import layers
 import keras_tuner as kt
 
-def load_beans_data():
-    (train_ds, val_ds, test_ds), info = tfds.load('beans',split=['train', 'validation', 'test'],with_info=True,as_supervised=True )
-    
-    num_classes = info.features['label'].num_classes
-    print(f"Liczba klas: {num_classes}")
-    print(f"Nazwy klas: {info.features['label'].names}")
-    
-    return train_ds, val_ds, test_ds, num_classes
 
-def preprocess_image(image, label):
+def preprocess(image, label):
     image = tf.image.resize(image, [128, 128])
-    image = tf.cast(image, tf.float32) / 255.0 
-    return image, label
+    return tf.cast(image, tf.float32) / 255.0, label
 
-def prepare_dataset(ds, batch_size=32, shuffle=True):
-    ds = ds.map(preprocess_image, num_parallel_calls=tf.data.AUTOTUNE)
-    if shuffle:
-        ds = ds.shuffle(1000)
-    ds = ds.batch(batch_size)
-    ds = ds.prefetch(tf.data.AUTOTUNE)  
-    return ds
 
-def create_model(input_shape, num_classes, initializer='glorot_uniform', activation='relu', optimizer='adam'):
-    model = keras.Sequential([
-        layers.Input(shape=input_shape),
-        layers.Flatten(),  
-        
-        layers.Dense(256, activation=activation, kernel_initializer=initializer),
-        layers.Dropout(0.3),  
-        
-        layers.Dense(128, activation=activation, kernel_initializer=initializer),
-        layers.Dropout(0.3),
-        
-        layers.Dense(num_classes, activation='softmax')  
+(train_ds, val_ds, test_ds), info = tfds.load('beans', split=['train', 'validation', 'test'], with_info=True,
+                                              as_supervised=True)
+
+train_ds = train_ds.map(preprocess).cache().shuffle(1000).batch(32).prefetch(tf.data.AUTOTUNE)
+val_ds = val_ds.map(preprocess).batch(32).cache()
+test_ds = test_ds.map(preprocess).batch(32)
+
+
+def create_model(initializer='glorot_uniform', activation='relu', optimizer='adam'):
+    model = tf.keras.Sequential([
+        tf.keras.layers.Input(shape=(128, 128, 3)),
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense(156, activation=activation, kernel_initializer=initializer),
+        tf.keras.layers.Dropout(0.3),
+        tf.keras.layers.Dense(128, activation=activation, kernel_initializer=initializer),
+        tf.keras.layers.Dropout(0.3),
+        tf.keras.layers.Dense(64, activation=activation, kernel_initializer=initializer),
+        tf.keras.layers.Dense(3, activation='softmax')
     ])
-    
-    model.compile(
-        optimizer=optimizer,
-        loss='sparse_categorical_crossentropy', 
-        metrics=['accuracy']
-    )
-    
+
+    model.compile(optimizer=optimizer,
+                  loss='sparse_categorical_crossentropy',
+                  metrics=['accuracy'])
     return model
 
-def train_model(model, train_ds, val_ds, epochs=30):
-    early_stop = keras.callbacks.EarlyStopping(
-        monitor='val_accuracy',
-        patience=5,  
-        restore_best_weights=True
-    )
-    
-    history = model.fit(
-        train_ds,
-        validation_data=val_ds,
-        epochs=epochs,
-        callbacks=[early_stop],
-        verbose=1
-    )
-    
-    return model, history
 
-def build_tuner_model(input_shape, num_classes):
-    def build_model(hp):
-        initializer = hp.Choice('initializer', ['glorot_uniform', 'he_normal', 'random_normal'])
-        
-        activation = hp.Choice('activation', ['relu', 'tanh', 'elu'])
-        
-        optimizer_name = hp.Choice('optimizer', ['adam', 'sgd', 'rmsprop'])
-        
-        units_1 = hp.Int('units_1', min_value=128, max_value=512, step=128)
-        units_2 = hp.Int('units_2', min_value=64, max_value=256, step=64)
-        
-        model = keras.Sequential([
-            layers.Input(shape=input_shape),
-            layers.Flatten(),
-            layers.Dense(units_1, activation=activation, kernel_initializer=initializer),
-            layers.Dropout(0.3),
-            layers.Dense(units_2, activation=activation, kernel_initializer=initializer),
-            layers.Dropout(0.3),
-            layers.Dense(num_classes, activation='softmax')
-        ])
-        
-        model.compile(
-            optimizer=optimizer_name,
-            loss='sparse_categorical_crossentropy',
-            metrics=['accuracy']
-        )
-        
-        return model
-    
-    return build_model
+def model_builder(hp):
+    hp_init = hp.Choice('initializer', values=['glorot_uniform', 'he_normal'])
+    hp_act = hp.Choice('activation', values=['relu', 'elu', 'tanh'])
+    hp_opt = hp.Choice('optimizer', values=['adam', 'sgd', 'rmsprop'])
 
-def run_tuner(train_ds, val_ds, input_shape, num_classes, max_trials=10, epochs=20):
-    build_model = build_tuner_model(input_shape, num_classes)
-    
-    tuner = kt.RandomSearch(
-        build_model,
-        objective='val_accuracy',
-        max_trials=max_trials, 
-        directory='tuner_results_beans',
-        project_name='beans_classifier',
-        overwrite=True
-    )
-    
-    print(f"Rozpoczynam przeszukiwanie {max_trials} kombinacji hiperparametrów...")
-    
-    tuner.search(
-        train_ds,
-        validation_data=val_ds,
-        epochs=epochs,
-        verbose=1
-    )
-    
-    best_hps = tuner.get_best_hyperparameters(num_trials=1)[0]
-    
-    print("\n=== NAJLEPSZE PARAMETRY ===")
-    print(f"Initializer: {best_hps.get('initializer')}")
-    print(f"Activation: {best_hps.get('activation')}")
-    print(f"Optimizer: {best_hps.get('optimizer')}")
-    print(f"Units warstwa 1: {best_hps.get('units_1')}")
-    print(f"Units warstwa 2: {best_hps.get('units_2')}")
-    
-    best_model = tuner.get_best_models(num_models=1)[0]
-    
-    return best_model, best_hps
+    return create_model(initializer=hp_init, activation=hp_act, optimizer=hp_opt)
 
-def main():
-    print("=== Ładowanie danych Beans ===")
-    train_ds, val_ds, test_ds, num_classes = load_beans_data()
-    
-    print("\n=== Preprocessing danych ===")
-    train_prepared = prepare_dataset(train_ds, batch_size=32, shuffle=True)
-    val_prepared = prepare_dataset(val_ds, batch_size=32, shuffle=False)
-    test_prepared = prepare_dataset(test_ds, batch_size=32, shuffle=False)
-    
-    input_shape = (128, 128, 3) 
-    
-    print("\n=== Optymalizacja hiperparametrów ===")
-    best_model, best_hps = run_tuner(
-        train_prepared, 
-        val_prepared, 
-        input_shape, 
-        num_classes,
-        max_trials=6,  
-        epochs=15
-    )
-    
-    print("\n=== Ewaluacja na zbiorze testowym ===")
-    test_loss, test_accuracy = best_model.evaluate(test_prepared)
-    print(f"Test Accuracy: {test_accuracy:.4f}")
-    print(f"Test Loss: {test_loss:.4f}")
-    
-    model_path = 'beans_best_model.keras'
-    best_model.save(model_path)
-    print(f"\nModel zapisany jako: {model_path}")
-    
-    return best_model, best_hps, test_accuracy
 
-if __name__ == "__main__":
-    main()
+tuner = kt.Hyperband(model_builder,
+                     objective='val_accuracy',
+                     max_epochs=20,
+                     factor=3,
+                     directory='lab6_tuner_mlp',
+                     project_name='beans_mlp_monster')
+
+stop_early = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5)
+
+tuner.search(train_ds, validation_data=val_ds, callbacks=[stop_early])
+
+best_hps = tuner.get_best_hyperparameters(num_trials=1)[0]
+print(
+    f"Najlepsze parametry: Act={best_hps.get('activation')}, Opt={best_hps.get('optimizer')}, Init={best_hps.get('initializer')}")
+
+best_model = tuner.get_best_models(num_models=1)[0]
+best_model.save('model_beans.keras')
