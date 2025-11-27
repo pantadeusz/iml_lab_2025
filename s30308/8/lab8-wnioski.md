@@ -26,7 +26,7 @@ Po prostu model uczył się rozkładu pikseli na obrazie zamiast faktycznych ksz
 
 Spadła dokładność w porównaniu do baseline jednakże ten model lepiej generalizuje
 
-## Model konwulencyjny z augmentacją danych ##
+## Model konwolucyjny z augmentacją danych ##
 
 - Loss: 0.176, 
 - Accuracy: 0.946
@@ -35,4 +35,4 @@ Spadła dokładność w porównaniu do baseline jednakże ten model lepiej gener
 
 - Model baseline osiągał najlepszą dokładność ale kosztem generalizacji
 - Model baseline z augmentacją dobrze generalizuje i ma wysoką dokładność
-- Model konwulencyjny jest nieznaczne lepszy od sieci FNN z augmentacją
+- Model konwoluncyjny jest nieznaczne lepszy od sieci FNN z augmentacją

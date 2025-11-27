@@ -138,7 +138,7 @@ def evaluate_model(model_path, ds_test):
 
 def experiment_with_augmentation(augmentate_train, augmentate_test, conv, path):
     ds_train, ds_test = prepare_data(augmentate_train, augmentate_test)
-    train_model(ds_train, ds_test, path)
+    train_model(ds_train, ds_test, path, conv)
     evaluate_model(path, ds_test)
 
 
