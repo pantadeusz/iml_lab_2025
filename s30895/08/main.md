@@ -248,7 +248,7 @@ Classification Report:
 
 Podsumowanie\
 w modelu bazowym gdy został wyuczony na danych po augmentacji radził sobie równie dobrze z danymi testowymi z augmentacją jak i bez\
-gdy był nauczony na danych bez augmentacji w przypadku testowania na danych opo augmentacji metryki były praktycznie o połowę gorsze\
+gdy był nauczony na danych bez augmentacji w przypadku testowania na danych po augmentacji metryki były praktycznie o połowę gorsze\
 tak samo zachował się model z siecią konwolucyjną\
 najlepiej radziły sobie oba modele na danych testowych bez augmentacji, wytrenowane również na nieprzerobionych danych, co jest spodziewanym wynikiem\
 jednak wyniki były minimalnie gorsze w przypadku treningu na danych po augmentacji, a klasyfikacja danych zniekształconych bardzo skuteczna, co pokazuje że augmentacja przynosi pozytywne\

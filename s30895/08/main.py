@@ -4,7 +4,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import classification_report, confusion_matrix
-AUTOTUNE = tf.data.AUTOTUNE
 batch_size = 64
 
 (ds_train, ds_test), ds_info = tfds.load(
@@ -22,22 +21,14 @@ def prepare_data(ds_train, ds_test, ds_info):
     ds_train = ds_train.map( normalize_img, num_parallel_calls=tf.data.AUTOTUNE)
     ds_train = ds_train.cache()
     ds_train = ds_train.shuffle(ds_info.splits['train'].num_examples)
-    ds_train = ds_train.batch(64)
+    ds_train = ds_train.batch(batch_size)
     ds_train = ds_train.prefetch(tf.data.AUTOTUNE)
 
     ds_test = ds_test.map( normalize_img, num_parallel_calls=tf.data.AUTOTUNE)
-    ds_test = ds_test.batch(64)
+    ds_test = ds_test.batch(batch_size)
     ds_test = ds_test.cache()
     ds_test = ds_test.prefetch(tf.data.AUTOTUNE)
     return ds_train, ds_test
-
-def prep_data_for_augmentation(dataset, batch_size):
-
-    dataset = dataset.map(normalize_img, num_parallel_calls=AUTOTUNE).cache()
-    dataset = dataset.shuffle(ds_info.splits['train'].num_examples)
-    dataset = dataset.map(lambda x, y: (tf.squeeze(x, axis=-1), y))
-    dataset = dataset.batch(batch_size)
-    return dataset
 
 def build_basic_model():
     model = tf.keras.models.Sequential([
@@ -97,11 +88,12 @@ def augment(image, label):
 
 def augment_batch(images, labels):
     augmented_images = tf.map_fn(
-        lambda img: tf.squeeze(augment(tf.expand_dims(img, axis=-1), 0)[0]),
+        lambda img: augment(img, labels)[0],   # augment returns (aug_img, label)
         images,
         fn_output_signature=tf.float32
     )
     return augmented_images, labels
+
 
 def predict_and_generate_metrics(model, dataset, augment_function=None):
     y_true_list = []
@@ -147,19 +139,20 @@ def show_sample_augmented_image(augment_function, dataset):
     plt.imshow(tf.squeeze(sample_image), cmap='gray')
     plt.title("Normal Image")
     plt.axis('off')
+    plt.savefig(f"img")
     plt.show()
 
     augmented_image, _ = augment_function(sample_image, _)
     plt.imshow(tf.squeeze(augmented_image), cmap='gray')
     plt.title("Augmented Image")
     plt.axis('off')
+    plt.savefig("img_aug")
     plt.show()
-
 
 ds_train_prepared, ds_test = prepare_data(ds_train, ds_test, ds_info)
 
 ds_train_aug = (
-    prep_data_for_augmentation(ds_train, batch_size)
+    ds_train_prepared
     .map(lambda x, y: augment_batch(x, y), num_parallel_calls=tf.data.AUTOTUNE)
     .shuffle(1000)
     .prefetch(tf.data.AUTOTUNE)
