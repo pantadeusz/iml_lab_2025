@@ -9,7 +9,7 @@ import argparse
 
 def init_argparser():
     argparser = argparse.ArgumentParser()
-    argparser.add_argument('-r', '--rotation', default=0.1)
+    argparser.add_argument('-r', '--rotation', default=0.2)
     return argparser.parse_args()
 
 def get_data():
@@ -21,7 +21,7 @@ def normalize_data(x_train, x_test):
     x_test = x_test.astype('float32') / 255.
     return x_train, x_test
 
-def get_augmented_data(x_train, rotation_factor=0.1):
+def get_augmented_data(x_train, rotation_factor=0.2):
     x_train = np.expand_dims(x_train, axis=-1)
 
     augmentation_pipeline = tf.keras.Sequential([
@@ -29,9 +29,11 @@ def get_augmented_data(x_train, rotation_factor=0.1):
     ])
 
     x_augmented = augmentation_pipeline(x_train).numpy()
-
+    
+    first_augmented_image = x_augmented[0].squeeze()
     plt.imshow(x_augmented[0].squeeze(), cmap='gray')
     plt.show()
+    plt.imsave('image.png', first_augmented_image, cmap='plasma')
 
     x_augmented = np.squeeze(x_augmented)
     return x_augmented
@@ -67,8 +69,47 @@ def create_and_train_autoencoder(x_train, x_test):
                     validation_data=(x_test, x_test))
     return autoencoder
 
-def show_augmented_and_after_autoencoder(x_train, autoencoder):
-    results = autoencoder(x_train).numpy()
+def create_and_train_conv_autoencoder(x_train, x_test):
+     # adding channel dim (n, 28, 28) -> (n, 28, 28, 1)
+    x_train = np.expand_dims(x_train, axis=-1)
+    x_test = np.expand_dims(x_test, axis=-1)
+    
+    class Autoencoder(Model):
+        def __init__(self, latent_dim, shape):
+            super(Autoencoder, self).__init__()
+            self.latent_dim = latent_dim
+            self.shape = shape
+            self.encoder = tf.keras.Sequential([
+                layers.Conv2D(filters=64, kernel_size=(3, 3), activation='relu', input_shape=(x_train[0].shape),),
+                layers.MaxPooling2D(pool_size=(2, 2)),
+                layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu'),
+                layers.MaxPooling2D(pool_size=(2, 2)),
+                layers.Flatten(),
+                layers.Dense(latent_dim, activation='relu'),
+            ])
+            self.decoder = tf.keras.Sequential([
+                layers.Dense(tf.math.reduce_prod(shape).numpy(), activation='sigmoid'),
+                layers.Reshape(shape)
+            ])
+
+        def call(self, x):
+            encoded = self.encoder(x)
+            decoded = self.decoder(encoded)
+            return decoded
+
+    shape = x_test.shape[1:]
+    latent_dim = 64
+    autoencoder = Autoencoder(latent_dim, shape)
+
+    autoencoder.compile(optimizer='adam', loss=losses.MeanSquaredError())
+    autoencoder.fit(x_train, x_train,
+                    epochs=10,
+                    shuffle=True,
+                    validation_data=(x_test, x_test))
+    return autoencoder    
+
+def forward_through_autoencoder(x_train, autoencoder, title='Inference results'):
+    results = autoencoder(x_train).predict(batch_size=32)
 
     n_cols = 8
     fig, axes = plt.subplots(2, n_cols, figsize=(16, 4))
@@ -83,16 +124,27 @@ def show_augmented_and_after_autoencoder(x_train, autoencoder):
     axes[0][0].set_ylabel("Original", fontsize=14)
     axes[1][0].set_ylabel("Reconstructed", fontsize=14)
 
+    plt.title(title)
     plt.tight_layout()
     plt.show()
+    
+def save_encoder_and_decoder(autoencoder, suffix=None):
+    autoencoder.encoder.save(f'encoder{f'_{suffix}' if suffix else ''}.keras')
+    autoencoder.decoder.save(f'decoder{f'_{suffix}' if suffix else ''}.keras')
 
 if __name__ == '__main__':
     args = init_argparser()
-    rotation = args.rotation
+    rotation = float(args.rotation)
     
     x_train, x_test = get_data()
     x_train, x_test = normalize_data(x_train, x_test)
-    autoencoder = create_and_train_autoencoder(x_train, x_test)
     x_train_augmented = get_augmented_data(x_train, rotation_factor=rotation)
 
-    show_augmented_and_after_autoencoder(x_train_augmented, autoencoder)
+    exit(0)
+    # autoencoder = create_and_train_autoencoder(x_train, x_test)
+    # forward_through_autoencoder(x_train_augmented, autoencoder, title='Basic autoencoder inference')
+    # save_encoder_and_decoder(autoencoder)
+    
+    conv_autoencoder = create_and_train_conv_autoencoder(x_train, x_test)
+    forward_through_autoencoder(x_train_augmented, conv_autoencoder, title='Autoencoder with convolution layers inference')
+    save_encoder_and_decoder(conv_autoencoder, suffix='conv')
