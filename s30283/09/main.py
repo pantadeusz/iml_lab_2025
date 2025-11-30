@@ -38,7 +38,7 @@ def get_augmented_data(x_train, rotation_factor=0.2):
     x_augmented = np.squeeze(x_augmented)
     return x_augmented
 
-def create_and_train_autoencoder(x_train, x_test):
+def create_and_train_autoencoder(x_train, x_train_augmented, x_test):
     class Autoencoder(Model):
         def __init__(self, latent_dim, shape):
             super(Autoencoder, self).__init__()
@@ -63,13 +63,13 @@ def create_and_train_autoencoder(x_train, x_test):
     autoencoder = Autoencoder(latent_dim, shape)
 
     autoencoder.compile(optimizer='adam', loss=losses.MeanSquaredError())
-    autoencoder.fit(x_train, x_train,
+    autoencoder.fit(x_train_augmented, x_train,
                     epochs=10,
                     shuffle=True,
                     validation_data=(x_test, x_test))
     return autoencoder
 
-def create_and_train_conv_autoencoder(x_train, x_test):
+def create_and_train_conv_autoencoder(x_train, x_train_augmented, x_test):
      # adding channel dim (n, 28, 28) -> (n, 28, 28, 1)
     x_train = np.expand_dims(x_train, axis=-1)
     x_test = np.expand_dims(x_test, axis=-1)
@@ -102,14 +102,14 @@ def create_and_train_conv_autoencoder(x_train, x_test):
     autoencoder = Autoencoder(latent_dim, shape)
 
     autoencoder.compile(optimizer='adam', loss=losses.MeanSquaredError())
-    autoencoder.fit(x_train, x_train,
+    autoencoder.fit(x_train_augmented, x_train,
                     epochs=10,
                     shuffle=True,
                     validation_data=(x_test, x_test))
     return autoencoder    
 
 def forward_through_autoencoder(x_train, autoencoder, title='Inference results'):
-    results = autoencoder(x_train).predict(batch_size=32)
+    results = autoencoder(x_train[:8])
 
     n_cols = 8
     fig, axes = plt.subplots(2, n_cols, figsize=(16, 4))
@@ -140,11 +140,10 @@ if __name__ == '__main__':
     x_train, x_test = normalize_data(x_train, x_test)
     x_train_augmented = get_augmented_data(x_train, rotation_factor=rotation)
 
-    exit(0)
-    # autoencoder = create_and_train_autoencoder(x_train, x_test)
-    # forward_through_autoencoder(x_train_augmented, autoencoder, title='Basic autoencoder inference')
-    # save_encoder_and_decoder(autoencoder)
+    autoencoder = create_and_train_autoencoder(x_train, x_train_augmented, x_test)
+    forward_through_autoencoder(x_train_augmented, autoencoder, title='Basic autoencoder inference')
+    save_encoder_and_decoder(autoencoder)
     
-    conv_autoencoder = create_and_train_conv_autoencoder(x_train, x_test)
+    conv_autoencoder = create_and_train_conv_autoencoder(x_train, x_train_augmented, x_test)
     forward_through_autoencoder(x_train_augmented, conv_autoencoder, title='Autoencoder with convolution layers inference')
     save_encoder_and_decoder(conv_autoencoder, suffix='conv')

@@ -42,8 +42,9 @@ def init_argparser():
     return parser.parse_args()
 
 def run_inference(encoder, decoder, input_data):
-    encoded_img = encoder(input_data)
-    reconstructed_img = decoder(encoded_img)
+    latent = encoder(input_data)
+    print(f'Latent: \n{latent}')
+    reconstructed_img = decoder(latent)
     return reconstructed_img
 
 def load_and_preprocess_image(image_path, target_size=IMAGE_SHAPE):
@@ -52,19 +53,13 @@ def load_and_preprocess_image(image_path, target_size=IMAGE_SHAPE):
     
     return np.expand_dims(np_image, axis=0)
 
-
 if __name__ == '__main__':
     args = init_argparser()
     encoder_path, decoder_path, image_path = args.encoder_path, args.decoder_path, args.image_path
+    print(encoder_path, decoder_path, image_path)
     
-    CUSTOM_OBJECTS = {"Autoencoder": Autoencoder}
-    
-    try:
-        encoder = load_model(encoder_path, custom_objects=CUSTOM_OBJECTS)
-        decoder = load_model(decoder_path, custom_objects=CUSTOM_OBJECTS)
-    except Exception as e:
-        print(f"Error loading models: {e}.")
-        exit()
+    encoder = load_model(encoder_path)
+    decoder = load_model(decoder_path)
         
     np_image_batch = load_and_preprocess_image(image_path)
     np_image_original = np_image_batch.squeeze()
@@ -72,6 +67,7 @@ if __name__ == '__main__':
     image_result_batch = run_inference(encoder, decoder, np_image_batch)
     
     image_result = image_result_batch.numpy().squeeze()
+    plt.imsave('image_result.png', image_result, cmap='gray')
     
     fig, axes = plt.subplots(1, 2, figsize=(8, 4))
     
