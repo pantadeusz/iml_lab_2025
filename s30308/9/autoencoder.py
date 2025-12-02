@@ -18,16 +18,25 @@ def load_data():
 
     return x_train, x_test
 
+
 def rotate_ds(ds):
+    # Dodajemy wymiar kanału (28, 28) -> (28, 28, 1)
+    # Bez tego RandomRotation bierze ostatni wymiar jako ilość kanałów przez co wynik wychodzi zniekształcony
+    ds = tf.expand_dims(ds, -1)
+
     data_augmentation = tf.keras.Sequential([
         layers.RandomRotation(
-            factor=(-0.04, 0.04),
-            fill_mode='nearest',
+            factor=(-0.1, 0.1),
+            fill_mode='constant',
+            fill_value=0.0,  # Wypełniamy czarnym kolorem (0.0)
             interpolation='bilinear'
         )
     ])
 
-    return data_augmentation(ds).numpy()
+    augmented = data_augmentation(ds)
+
+    # Usuwamy wymiar kanału, aby wrócić do formatu (28, 28)
+    return tf.squeeze(augmented, axis=-1).numpy()
 
 class Autoencoder(Model):
     def __init__(self, latent_dim, shape):
@@ -49,20 +58,26 @@ class Autoencoder(Model):
         return decoded
 
 
-def train_autoencdoer(x_train, x_test):
+def train_autoencoder(x_train, x_test):
     shape = x_test.shape[1:]
     latent_dim = 64
     autoencoder = Autoencoder(latent_dim, shape)
 
     autoencoder.compile(optimizer='adam', loss=losses.MeanSquaredError())
 
-    autoencoder.fit(x_train, x_train,
+    x_train_rotated = rotate_ds(x_train)
+    x_test_rotated = rotate_ds(x_test)
+
+    autoencoder.fit(x_train_rotated, x_train,
                     epochs=10,
                     shuffle=True,
                     validation_data=(x_test, x_test))
 
-    encoded_imgs = autoencoder.encoder(x_test).numpy()
+
+    encoded_imgs = autoencoder.encoder(x_test_rotated).numpy()
     decoded_imgs = autoencoder.decoder(encoded_imgs).numpy()
+
+    show_reconstruction(x_train_rotated, decoded_imgs)
 
     return encoded_imgs, decoded_imgs
 
@@ -91,9 +106,4 @@ def show_reconstruction(output_imgs, result_imgs):
 if __name__ == '__main__':
     x_train, x_test = load_data()
 
-    # Augmentate data
-    x_train = rotate_ds(x_train)
-    x_test = rotate_ds(x_test)
-
-    encoded_imgs, decoded_imgs = train_autoencdoer(x_train, x_test)
-    show_reconstruction(x_test, decoded_imgs)
+    encoded_imgs, decoded_imgs = train_autoencoder(x_train, x_test)
