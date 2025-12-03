@@ -7,8 +7,6 @@ import tensorflow
 
 (x_train, _), (x_test, _) = tf.keras.datasets.fashion_mnist.load_data()
 
-
-
 class Autoencoder(tf.keras.models.Model):
   def __init__(self, latent_dim, shape):
     super(Autoencoder, self).__init__()
@@ -69,7 +67,6 @@ class AutoencoderConvTransposition(tf.keras.models.Model):
     return decoded
 
 
-
 def random_rotate_batch(images, angle_range=(-20, 20)):
     rotated = []
     for img in images:
@@ -83,7 +80,6 @@ def display_autoencoder_results(x_test, x_test_decoded):
   n = 10
   plt.figure(figsize=(20, 4))
   for i in range(n):
-    # display original
     ax = plt.subplot(2, n, i + 1)
     plt.imshow(x_test[i])
     plt.title("original")
@@ -91,7 +87,6 @@ def display_autoencoder_results(x_test, x_test_decoded):
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 
-    # display reconstruction
     ax = plt.subplot(2, n, i + 1 + n)
     plt.imshow(x_test_decoded[i])
     plt.title("reconstructed")
@@ -100,26 +95,30 @@ def display_autoencoder_results(x_test, x_test_decoded):
     ax.get_yaxis().set_visible(False)
   plt.show()
 
-shape = x_test.shape[1:]
-latent_dim = 64
-autoencoder = Autoencoder(latent_dim,shape)
 
-autoencoder.compile(optimizer='adam', loss=tf.keras.losses.MeanSquaredError())
 
-x_train = x_train.astype('float32') / 255. #train labels
-x_test = x_test.astype('float32') / 255. #test labels
-x_train_rot = random_rotate_batch(x_train)
-x_test_rot = random_rotate_batch(x_test)
 
-autoencoder.fit(x_train_rot, x_train,
-                epochs=10,
-                shuffle=True,
-                validation_data=(x_test_rot, x_test))
+if __name__ == "__main__":
+  shape = x_test.shape[1:]
+  latent_dim = 64
+  autoencoder = Autoencoder(latent_dim,shape)
 
-encoded_imgs = autoencoder.encoder(x_test_rot).numpy()
-decoded_imgs = autoencoder.decoder(encoded_imgs).numpy()
+  autoencoder.compile(optimizer='adam', loss=tf.keras.losses.MeanSquaredError())
 
-autoencoder.encoder.save("models/encoder.keras")
-autoencoder.decoder.save("models/decoder.keras")
+  x_train = x_train.astype('float32') / 255. #train labels
+  x_test = x_test.astype('float32') / 255. #test labels
+  x_train_rot = random_rotate_batch(x_train)
+  x_test_rot = random_rotate_batch(x_test)
 
-display_autoencoder_results(x_test_rot, decoded_imgs)
+  autoencoder.fit(x_train_rot, x_train,
+                  epochs=10,
+                  shuffle=True,
+                  validation_data=(x_test_rot, x_test))
+
+  encoded_imgs = autoencoder.encoder(x_test_rot).numpy()
+  decoded_imgs = autoencoder.decoder(encoded_imgs).numpy()
+
+  autoencoder.encoder.save("models/encoder.keras")
+  autoencoder.decoder.save("models/decoder.keras")
+
+  display_autoencoder_results(x_test_rot, decoded_imgs)
