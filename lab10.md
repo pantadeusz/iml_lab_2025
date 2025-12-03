@@ -2,7 +2,7 @@
 
 Dzisiaj będziemy bazowali na samouczku od autorów TensorFlow dotyczącym analizy sentymentu.
 
-Oryginalny tutorial jest https://www.tensorflow.org/text/tutorials/text_classification_rnn
+Oryginalny samouczek jest https://www.tensorflow.org/text/tutorials/text_classification_rnn
 
 Musiałem go zaktualizować - chodziło o typy danych do metody predict. Wersja zaktualizowana jest 
 w docs/tutorials/text_classification_rnn.ipynb
@@ -11,7 +11,7 @@ w docs/tutorials/text_classification_rnn.ipynb
 
 Zapoznaj się z samouczkiem - jeśli coś jest do wyjaśnienia - KONIECZNIE ZAPYTAJ.
 
-Postaraj sie uruchomić lokalnie program z tego tutoriala - można wyeksportować jako kod.
+Postaraj się uruchomić lokalnie program z tego samouczka - można wyeksportować jako kod.
 
 Jeśli działa u Ciebie lokalnie lub na maszynie zdalnej z procesorem do obliczeń - to jest OK.
 
@@ -36,6 +36,6 @@ for line in sys.stdin:
     print(line)
 ```
 
-## Zadanie na dodatkowy 0.5pkt
+## Zadanie na dodatkowy 0,5 pkt
 
 Zastosuj Keras Tuner albo inną metodę optymalizacji hiperparametrów. Postaraj się wytrenować jak najlepszy model predykcji sentymentu.
