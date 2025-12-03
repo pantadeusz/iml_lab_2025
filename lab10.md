@@ -2,10 +2,10 @@
 
 Dzisiaj będziemy bazowali na samouczku od autorów TensorFlow dotyczącym analizy sentymentu.
 
-Oryginalny samouczek jest https://www.tensorflow.org/text/tutorials/text_classification_rnn
+Oryginalny samouczek jest [tutaj](https://www.tensorflow.org/text/tutorials/text_classification_rnn)
 
 Musiałem go zaktualizować - chodziło o typy danych do metody predict. Wersja zaktualizowana jest 
-w docs/tutorials/text_classification_rnn.ipynb
+w [docs/tutorials/text_classification_rnn.ipynb](docs/tutorials/text_classification_rnn.ipynb)
 
 ## Zadanie 1
 
