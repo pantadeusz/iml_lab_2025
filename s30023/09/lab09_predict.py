@@ -3,6 +3,7 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 from tensorflow.keras.datasets import fashion_mnist
+import cv2
 
 
 def load_trained_models():
@@ -12,19 +13,19 @@ def load_trained_models():
 
 
 def get_sample_image():
-    (_, _), (x_test, _) = fashion_mnist.load_data()
+    # (_, _), (x_test, _) = fashion_mnist.load_data()
+    #
+    # index_of_random_picture = np.random.randint(0, len(x_test))
+    # image = x_test[index_of_random_picture]
 
-    index_of_random_picture = np.random.randint(0, len(x_test))
-    image = x_test[index_of_random_picture]
+    image = cv2.imread('Group.png')
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     image = image.astype('float32') / 255.
     image = image[..., tf.newaxis]
     image_batch = tf.expand_dims(image, 0)
 
-    augmentation = tf.keras.layers.RandomRotation(0.2, fill_mode='constant', fill_value=0.0)
-    rotated_image = augmentation(image_batch)
-
-    return rotated_image, image
+    return image_batch, image
 
 
 def process_image(encoder, decoder, input_image):
