@@ -10,3 +10,4 @@ keras
 keras_tuner
 tensorflow_datasets
 imblearn
+opencv-python

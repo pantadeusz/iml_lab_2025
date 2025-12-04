@@ -1,6 +1,8 @@
+import argparse
+
 import matplotlib.pyplot as plt
 import tensorflow as tf
-import numpy as np
+import cv2
 
 from tensorflow.keras import layers, losses
 from tensorflow.keras.datasets import fashion_mnist
@@ -211,6 +213,11 @@ def display_and_save_test_image(input_img, decoded_img, encoded_vector):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--image", help="Image location", required=True)
+
+    args = parser.parse_args()
+
     x_train, x_test = load_data()
 
     # Sprawdzenie, czy model jest już wytrenowany i załadowanie go
@@ -219,28 +226,29 @@ if __name__ == '__main__':
     if autoencoder is None:
         print("Model nie znaleziony. Rozpoczynanie treningu...")
         train_autoencoder(x_train, x_test, conv=True)
-    else:
-        print("Model załadowany pomyślnie. Przeprowadzanie testu...")
 
-        # Wybór losowego obrazka testowego
-        idx = np.random.randint(0, len(x_test))
-        test_img = x_test[idx]
 
-        # Augmentacja i dodanie wymiarów
-        test_img_rotated_2d = rotate_ds(test_img)
+    print("Model załadowany pomyślnie. Przeprowadzanie testu...")
 
-        # Musimy dodać wymiar kanału i partii (batch) przed podaniem do Enkodera
-        test_img_input = tf.expand_dims(tf.expand_dims(test_img_rotated_2d, -1), 0)
+    img = cv2.imread(args.image, cv2.IMREAD_GRAYSCALE)
 
-        # Przetwarzanie
-        encoded_img = autoencoder.encoder(test_img_input).numpy()
-        decoded_img_output = autoencoder.decoder(encoded_img).numpy()
+    # Skalowanie do 28×28
+    img = cv2.resize(img, (28, 28))
+    img = img.astype("float32") / 255.0
 
-        # 4. Wyświetlanie i zapisywanie
-        # autoencoder(x) zwraca (N, 28, 28), więc decoded_img_output jest (1, 28, 28)
 
-        display_and_save_test_image(
-            input_img=test_img_rotated_2d,  # Wejście do wyświetlenia
-            decoded_img=decoded_img_output[0],  # Wyjście do wyświetlenia
-            encoded_vector=encoded_img[0]  # Wektor ukryty
-        )
+    # Musimy dodać wymiar kanału i partii (batch) przed podaniem do Enkodera
+    test_img_input = tf.expand_dims(tf.expand_dims(img, -1), 0)
+
+    # Przetwarzanie
+    encoded_img = autoencoder.encoder(test_img_input).numpy()
+    decoded_img_output = autoencoder.decoder(encoded_img).numpy()
+
+    # 4. Wyświetlanie i zapisywanie
+    # autoencoder(x) zwraca (N, 28, 28), więc decoded_img_output jest (1, 28, 28)
+
+    display_and_save_test_image(
+        input_img=img,  # Wejście do wyświetlenia
+        decoded_img=decoded_img_output[0],  # Wyjście do wyświetlenia
+        encoded_vector=encoded_img[0]  # Wektor ukryty
+    )
