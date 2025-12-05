@@ -4,3 +4,5 @@ jupyter
 
 numpy
 scikit-learn
+tensorflow
+keras-tuner
