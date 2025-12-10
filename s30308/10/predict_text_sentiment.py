@@ -15,7 +15,8 @@ def classify_prediction(model, line):
     else:
         print("Tekst jest neutralny")
 
-    print(prediction)
+    print("Wartość predykcji: ", val)
+
 
 def handle_user_input(model):
     print("Sprawdź sentymentu tekstu wpisując go poniżej. Naciśnij 'Q', aby wyjść z programu")
