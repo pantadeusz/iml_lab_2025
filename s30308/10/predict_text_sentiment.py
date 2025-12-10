@@ -4,13 +4,32 @@ from text_classification_rnn import predict_text_sentiment
 
 from keras.models import load_model
 
+def classify_prediction(model, line):
+    prediction = predict_text_sentiment(model, line)
+    val = prediction[0][0]
+
+    if val > 0.1:
+        print("Tekst jest pozytywny")
+    elif val < 0.1:
+        print("Tekst jest negatywny")
+    else:
+        print("Tekst jest neutralny")
+
+    print(prediction)
+
+def handle_user_input(model):
+    print("Sprawdź sentymentu tekstu wpisując go poniżej. Naciśnij 'Q', aby wyjść z programu")
+    for line in sys.stdin:
+        if line.strip().lower() != "q":
+            classify_prediction(model, line)
+        else:
+            print("Zakończono program")
+            break
+
 if __name__ == '__main__':
     if os.path.exists("sentiment_model.keras"):
         model = load_model("sentiment_model.keras")
     else:
         raise FileNotFoundError("Model file not found")
 
-    print("Sprawdź sentymentu tekstu wpisując go poniżej. Naciśnij 'Q', aby wyjść z programu")
-    for line in sys.stdin:
-        prediction = predict_text_sentiment(model, line)
-        print(prediction)
+    handle_user_input(model)
