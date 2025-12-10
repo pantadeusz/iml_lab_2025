@@ -117,7 +117,7 @@ def find_best_architecture(build_model_tuner):
     tuner = kt.RandomSearch(
         build_model_tuner,
         objective='val_accuracy',
-        max_trials=10,  # Try 5 different hyperparameter sets
+        max_trials=10,
         executions_per_trial=1,
         directory='kt_tuner',
         project_name='imdb_sentiment'
