@@ -1,5 +1,3 @@
-import numpy as np
-
 import tensorflow_datasets as tfds
 import tensorflow as tf
 
@@ -85,6 +83,8 @@ def plot_losses(history):
     plot_graphs(history, 'loss')
     plt.ylim(0, None)
 
+def predict_text_sentiment(model ,text):
+    return model.predict(tf.constant([text], dtype=tf.string))
 
 
 if __name__ == '__main__':
@@ -96,8 +96,3 @@ if __name__ == '__main__':
 
     history = train_model(model, train_ds, test_ds)
     plot_losses(history)
-
-    sample_text = ('The movie was not good. The animation and the graphics '
-                   'were terrible. I would not recommend this movie.')
-    predictions = model.predict(tf.constant([sample_text], dtype=tf.string))
-    print(predictions)
