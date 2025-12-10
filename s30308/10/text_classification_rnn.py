@@ -95,4 +95,12 @@ if __name__ == '__main__':
     model = build_model(encoder)
 
     history = train_model(model, train_ds, test_ds)
+
     plot_losses(history)
+
+    plt.show()
+
+    sample_text = ('The movie was not good. The animation and the graphics '
+                   'were terrible. I would not recommend this movie.')
+    predictions = predict_text_sentiment(model, sample_text)
+    print(f"Predykcja dla przykładowego tekstu (logit): {predictions}")

@@ -2,7 +2,7 @@ import os.path
 import sys
 from text_classification_rnn import predict_text_sentiment
 
-from tensorflow.python.keras.saving.save import load_model
+from keras.models import load_model
 
 if __name__ == '__main__':
     if os.path.exists("sentiment_model.keras"):
