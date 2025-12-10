@@ -12,4 +12,5 @@ if __name__ == '__main__':
 
     print("Sprawdź sentymentu tekstu wpisując go poniżej. Naciśnij 'Q', aby wyjść z programu")
     for line in sys.stdin:
-        predict_text_sentiment(model, line)
+        prediction = predict_text_sentiment(model, line)
+        print(prediction)
