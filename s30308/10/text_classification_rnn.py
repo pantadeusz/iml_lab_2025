@@ -60,6 +60,8 @@ def train_model(model, train_ds, test_ds):
 
     test_loss, test_acc = model.evaluate(test_ds)
 
+    model.save("sentiment_model.keras")
+
     print('Test Loss:', test_loss)
     print('Test Accuracy:', test_acc)
 
@@ -84,18 +86,6 @@ def plot_losses(history):
     plt.ylim(0, None)
 
 
-
-
-
-# predict on a sample text without padding.
-
-# sample_text = ('The movie was not good. The animation and the graphics '
-#                'were terrible. I would not recommend this movie.')
-# predictions = model.predict(tf.constant([sample_text], dtype=tf.string))
-# print(predictions)
-
-
-###########################################
 
 if __name__ == '__main__':
     train_ds, test_ds = load_data()
