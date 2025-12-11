@@ -3,15 +3,13 @@ baseline:\
 Test Loss: 0.32919543981552124\
 Test Accuracy: 0.8637199997901917
 
-
     Value             |Hyperparameter
     64                |embedding_dim
     64                |lstm_1_units
     32                |lstm_2_units
-    64               |dense_units
+    64                |dense_units
     0.5               |dropout
-    0.0001        |learning_rate
-{'embedding_dim': 64, 'lstm_1_units': 64, 'lstm_2_units': 32, 'dense_units': 64, 'dropout':  0.5 , 'learning_rate':  0.0001 }\
+    0.0001            |learning_rate
 
     ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
     ┃ Layer (type)                    ┃ Output Shape           ┃       Param # ┃
@@ -36,6 +34,15 @@ tuned:\
 Test Loss: 0.32221415638923645
 Test Accuracy: 0.8660399913787842
 
+    Value             |Hyperparameter
+    128                |embedding_dim
+    64                |lstm_1_units
+    64                |lstm_2_units
+    64                |dense_units
+    0.4               |dropout
+    0.000143          |learning_rate
+
+
     ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
     ┃ Layer (type)                    ┃ Output Shape           ┃       Param # ┃
     ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
@@ -55,5 +62,7 @@ Test Accuracy: 0.8660399913787842
     │ dense_1 (Dense)                 │ (None, 1)              │            65 │
     └─────────────────────────────────┴────────────────────────┴───────────────┘
 
-Best hyperparameters:\
-{'embedding_dim': 128, 'lstm_1_units': 64, 'lstm_2_units': 64, 'dense_units': 64, 'dropout': 0.4, 'learning_rate': 0.00014295402262665648}
+wnioski:
+tuner znalazł nieznacznie lepszą architekturę w stosunku do bazowej. W wyniku dostosowywania atchitekrtury\
+zwiększony został nieznacznie learning rate oraz w warstwach embedding i lstm zwiększona została wielkość wektorów.\
+Dropout został nieznacznie zmniejszony do 0.4.

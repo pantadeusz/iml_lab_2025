@@ -16,7 +16,6 @@ def predict(model,text):
     else:
         print("Predicted class: Negative")
 
-model = keras.models.load_model("model.keras")
 
 try:
     model = keras.models.load_model("model.keras")
@@ -26,6 +25,3 @@ except Exception:
 
 for line in sys.stdin:
     predict(model,line)
-
-    if line == 'q':
-        exit(0)
