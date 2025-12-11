@@ -19,7 +19,6 @@ text_tensor = tf.constant([text_input])
 logits = model.predict(text_tensor, verbose=0)
 probability = tf.sigmoid(logits[0][0]).numpy()
 
-print(logits)
 sentiment = "POZYTYWNY" if probability >= 0.5 else "NEGATYWNY"
 
-print(f"Predykcja: {sentiment}")
+print(f"Predykcja: {sentiment} z pewnością {probability}")
