@@ -15,6 +15,8 @@ import numpy as np
 import tensorflow_datasets as tfds
 import tensorflow as tf
 
+from tensorflow.keras.models import load_model
+
 tfds.disable_progress_bar()
 
 import matplotlib.pyplot as plt
@@ -67,31 +69,37 @@ def create_model(encoder):
 
 
 def main():
-
     train_dataset, test_dataset = prepare_data()
     encoder = create_encoder(train_dataset)
     model = create_model(encoder)
     # sample_text = ('The movie was cool. The animation and the graphics '
     #                'were out of this world. I would recommend this movie.')
-    while True:
-        print("Podaj tekst:\n")
-        for line in sys.stdin:
-            predictions = model.predict(tf.constant([line], dtype=tf.string))
 
-            print(predictions[0])
+    model.compile(loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
+                  optimizer=tf.keras.optimizers.Adam(1e-4),
+                  metrics=['accuracy'])
 
-    # model.compile(loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
-    #               optimizer=tf.keras.optimizers.Adam(1e-4),
-    #               metrics=['accuracy'])
-    #
-    # history = model.fit(train_dataset, epochs=10,
-    #                     validation_data=test_dataset,
-    #                     validation_steps=30)
-    #
-    # test_loss, test_acc = model.evaluate(test_dataset)
-    #
-    # print('Test Loss:', test_loss)
-    # print('Test Accuracy:', test_acc)
+    history = model.fit(train_dataset, epochs=10,
+                        validation_data=test_dataset,
+                        validation_steps=30)
+
+    test_loss, test_acc = model.evaluate(test_dataset)
+
+
+
+    print('Test Loss:', test_loss)
+    print('Test Accuracy:', test_acc)
+
+    model.save('rnn.keras')
+
+
+    print("Podaj tekst:\n")
+    for line in sys.stdin:
+        predictions = model.predict(tf.constant([line], dtype=tf.string))
+
+        print(predictions[0])
+
+
     #
     # plt.figure(figsize=(16, 8))
     # plt.subplot(1, 2, 1)
