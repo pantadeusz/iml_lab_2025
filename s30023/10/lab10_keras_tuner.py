@@ -91,7 +91,7 @@ def main():
     tuner = kt.Hyperband(
         lambda hp: create_model(hp, encoder),
         objective='val_accuracy',
-        max_epochs=4,
+        max_epochs=6,
         factor=3,
         directory='lab10_keras_tuner',
         project_name='lab10'
