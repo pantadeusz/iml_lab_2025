@@ -7,7 +7,7 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 
 def main():
-    model = load_model("rnn.keras")
+    model = load_model("model.keras")
 
     print("Enter comment, or \"q\" to exit:")
 

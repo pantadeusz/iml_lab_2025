@@ -9,8 +9,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-import numpy as np
+import os
 
 import tensorflow_datasets as tfds
 import tensorflow as tf
@@ -20,6 +19,8 @@ from tensorflow.keras.models import load_model
 tfds.disable_progress_bar()
 
 import matplotlib.pyplot as plt
+
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 
 def plot_graphs(history, metric):
@@ -117,12 +118,6 @@ def test_model(model, train_dataset, test_dataset):
     plt.ylim(0, None)
 
 
-def predict_on_sample_text(model, sample_text):
-    predictions = model.predict(sample_text)
-
-    return predictions
-
-
 def main():
     train_dataset, test_dataset = prepare_data()
 
@@ -140,8 +135,7 @@ def main():
         "The director should consider different career path."
     )
 
-    predictions = predict_on_sample_text(
-        model,
+    predictions = model.predict(
         tf.constant([sample_positive_text, sample_negative_text], dtype=tf.string),
     )
     print(predictions)
@@ -157,10 +151,10 @@ def main():
         "The movie was not good. The animation and the graphics "
         "were terrible. I would not recommend this movie."
     )
-    predictions = predict_on_sample_text(model_2, np.array([sample_text]))
+    predictions = model_2.predict(tf.constant([sample_text]))
     print(predictions)
 
-    model.save("model_2.keras")
+    model_2.save("model_2.keras")
 
 
 if __name__ == "__main__":
