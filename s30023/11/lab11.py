@@ -5,9 +5,6 @@ import requests
 from lab11_WindowGenerator import WindowGenerator
 
 def get_data_from_yahoo(symbol, range, interval):
-    """
-        Getting JSON data from Yahoo
-    """
     URL = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?interval={interval}&range={range}&symbol={symbol}"
     response = requests.get(URL, headers={'User-Agent': 'Mozilla/5.0'})
 
@@ -66,6 +63,14 @@ def compile_and_fit(model, window, patience=2):
                       callbacks=[early_stopping])
   return history
 
+def predict_next(model, window):
+    input_tensor = tf.convert_to_tensor(window.values, dtype=tf.float32)
+    input_tensor = input_tensor[tf.newaxis, ...]
+
+    prediction_norm = model.predict(input_tensor)
+
+    return prediction_norm
+
 def main():
     data = get_data_from_yahoo('AAPL', "5y", "1d")
     test_df, train_df, val_df, train_mean, train_std = test_train_val_split(data, normalization=True)
@@ -81,25 +86,21 @@ def main():
 
     history = compile_and_fit(model, data_window)
 
-    print("\n--- Wyniki na zbiorze testowym ---")
-    val_performance = model.evaluate(data_window.val)
     test_performance = model.evaluate(data_window.test, verbose=0)
-    print(f"Val: {val_performance}, \nTest: {test_performance}")
+    # val_performance = model.evaluate(data_window.val)
+    # print(f"Val: {val_performance} \nTest: {test_performance}")
     print(f"MSE (znormalizowane): {test_performance[0]:.4f}")
 
     last_window_raw = data.iloc[-size_of_window:]
     last_window_norm = (last_window_raw - train_mean) / train_std
 
-    input_tensor = tf.convert_to_tensor(last_window_norm.values, dtype=tf.float32)
-    input_tensor = input_tensor[tf.newaxis, ...]
-
-    prediction_norm = model.predict(input_tensor)
-
+    prediction_norm = predict_next(model, last_window_norm)
     prediction_real = (prediction_norm * train_std['Price']) + train_mean['Price']
     last_real_price = data.iloc[-1]['Price']
 
     print(f"Ostatnia cena (zamknięcie): {last_real_price:.2f}")
-    print(f"Przewidywana cena (następna): {prediction_real[0][0]:.2f}")
+    print(f"Przewidywana cena (następna): {prediction_real[0][-1][0]:.2f}")
+    print(f"MSE: {((last_real_price *train_std['Price']) + train_mean['Price']):.2f}")
 
 
 if __name__ == "__main__":
