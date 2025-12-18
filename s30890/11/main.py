@@ -50,7 +50,6 @@ def create_sequences(data, lookback):
 
 
 def main():
-    print("Pobieranie danych...")
     raw_data = load_data(SYMBOL, INTERVAL)
     prices = extract_close_prices(raw_data)
 
