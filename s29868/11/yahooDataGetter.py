@@ -17,7 +17,7 @@ class YahooDataGetter:
         """Downloads data from Yahoo Finance"""
 
         print('Downloading data from Yahoo Finance for {}'.format(self.ticker))
-        df = yf.download(tickers=self.ticker, start=self.start_date, end=self.end_date)
+        df = yf.download(tickers=self.ticker, start=self.start_date, end=self.end_date, multi_level_index=False)
         self.data = df[['Close']].values
         print('Downloaded data: {} records'.format(len(self.data)))
         return self.data

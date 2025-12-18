@@ -1,3 +1,5 @@
+from yahooDataGetter import YahooDataGetter
+import yfinance as yf
 import tensorflow as tf
 import numpy as np
 from keras.src.layers import Dropout
