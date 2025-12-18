@@ -1,3 +1,5 @@
+import math
+
 import pandas as pd
 import tensorflow as tf
 import requests
@@ -58,7 +60,7 @@ def compile_and_fit(model, window, patience=2):
                 optimizer=tf.keras.optimizers.Adam(),
                 metrics=[tf.keras.metrics.MeanAbsoluteError()])
 
-  history = model.fit(window.train, epochs=20,
+  history = model.fit(window.train, epochs=40,
                       validation_data=window.val,
                       callbacks=[early_stopping])
   return history
@@ -73,6 +75,7 @@ def predict_next(model, window):
 
 def main():
     data = get_data_from_yahoo('AAPL', "5y", "1d")
+    print(data.tail(10))
     test_df, train_df, val_df, train_mean, train_std = test_train_val_split(data, normalization=True)
     model = create_model()
 
@@ -100,7 +103,8 @@ def main():
 
     print(f"Ostatnia cena (zamknięcie): {last_real_price:.2f}")
     print(f"Przewidywana cena (następna): {prediction_real[0][-1][0]:.2f}")
-    print(f"MSE: {((last_real_price *train_std['Price']) + train_mean['Price']):.2f}")
+    print(f"Przewidywana (znorm): {prediction_norm[0][-1][0]:.2f}")
+    print(f"MSE: {((math.sqrt(test_performance[0]) * train_std['Price']) + train_mean['Price']):.2f}")
 
 
 if __name__ == "__main__":
