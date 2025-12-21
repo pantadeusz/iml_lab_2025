@@ -1,3 +1,6 @@
+venv
+requirements.txt
 *.ipynb
-*.keras
 *.png
+*.keras
+*test.py
