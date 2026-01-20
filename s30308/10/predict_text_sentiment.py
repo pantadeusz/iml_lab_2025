@@ -21,11 +21,15 @@ def classify_prediction(model, line):
 def handle_user_input(model):
     print("Sprawdź sentymentu tekstu wpisując go poniżej. Naciśnij 'Q', aby wyjść z programu")
     for line in sys.stdin:
-        if line.strip().lower() != "q":
-            classify_prediction(model, line)
-        else:
+        if line.strip().lower() == "q":
             print("Zakończono program")
             break
+
+        if not line:
+            continue
+
+        classify_prediction(model, line)
+
 
 if __name__ == '__main__':
     if os.path.exists("sentiment_model.keras"):
