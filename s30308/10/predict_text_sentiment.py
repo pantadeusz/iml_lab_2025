@@ -25,7 +25,7 @@ def handle_user_input(model):
             print("Zakończono program")
             break
 
-        if not line:
+        if line == "":
             continue
 
         classify_prediction(model, line)
