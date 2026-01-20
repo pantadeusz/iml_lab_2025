@@ -21,11 +21,13 @@ def classify_prediction(model, line):
 def handle_user_input(model):
     print("Sprawdź sentymentu tekstu wpisując go poniżej. Naciśnij 'Q', aby wyjść z programu")
     for line in sys.stdin:
-        if line.strip().lower() == "q":
+        clean_line = line.strip()
+
+        if clean_line.lower() == "q":
             print("Zakończono program")
             break
 
-        if line == "":
+        if not clean_line:
             continue
 
         classify_prediction(model, line)
