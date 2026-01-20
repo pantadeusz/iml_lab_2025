@@ -52,6 +52,8 @@ def build_model(encoder):
 
 
 def train_model(model, train_ds, test_ds):
+    print("Liczba dostępnych GPU: ", len(tf.config.list_physical_devices('GPU')))
+
     history = model.fit(train_ds, epochs=10,
                         validation_data=test_ds,
                         validation_steps=30)
