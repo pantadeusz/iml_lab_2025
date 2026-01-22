@@ -1,0 +1,6 @@
+tensorflow
+numpy
+keras
+pandas
+yfinance
+scikit-learn
