@@ -7,3 +7,5 @@ scikit-learn
 tensorflow
 keras-tuner
 ucimlrepo
+black
+imbalanced-learn

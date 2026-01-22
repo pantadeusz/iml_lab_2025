@@ -73,35 +73,37 @@ def train_dnn_model(X_train, y_train, X_test, y_test, epochs=30):
     )
     return model
 
-def build_tuner_model(hp):
-    input_dim = 30
-    model = keras.Sequential()
-    model.add(layers.Dense(
-         units=hp.Int("units", min_value=32, max_value=128, step=32),
-          activation="relu",
-        input_shape=(input_dim,),
-      ))
-    model.add(layers.Dense(1, activation="sigmoid"))
-    learning_rate = hp.Choice("learning_rate", values=[1e-2, 1e-3, 1e-4])
-    model.compile(
-        optimizer=keras.optimizers.Adam(learning_rate=learning_rate),
-        loss="binary_crossentropy",
-         metrics=["accuracy"]
-    )
-    return model
+def build_tuner_model(input_dim):
+    def build_model(hp):
+        model = keras.Sequential()
+        model.add(layers.Dense(
+            units=hp.Int("units", min_value=32, max_value=128, step=32),
+            activation="relu",
+            input_shape=(input_dim,)
+        ))
+        model.add(layers.Dense(1, activation="sigmoid"))
+        learning_rate = hp.Choice("learning_rate", values=[1e-2, 1e-3, 1e-4])
+        model.compile(
+            optimizer=keras.optimizers.Adam(learning_rate=learning_rate),
+            loss="binary_crossentropy",
+            metrics=["accuracy"]
+        )
+        return model
+    
+    return build_model
 
 def run_tuner(X_train, y_train, X_test, y_test, max_trials=6, epochs=30):
-
+    build_model = build_tuner_model(input_dim=X_train.shape[1])
     print(f"Max trials: {max_trials}, Epochs: {epochs}")
     project_name = f"dnn_tuner_t{max_trials}_e{epochs}"
 
     tuner = kt.RandomSearch(
-        build_tuner_model,
+        build_model,
         objective="val_accuracy",
         max_trials=max_trials,
         directory='tuner_results',
         project_name=project_name,
-        overwrite=True
+        overwrite=True 
     )
     tuner.search(
         X_train, y_train, 
@@ -120,9 +122,6 @@ def run_tuner(X_train, y_train, X_test, y_test, max_trials=6, epochs=30):
     return best_model
 
 def main(run_baseline=True, run_dnn=False, use_tuner=False):
-    from tensorflow.python.client import device_lib
-    print(device_lib.list_local_devices())
-
     X, y = load_data()
     X_train, X_test, y_train, y_test, scaler = prepare_data(X, y)
     if run_baseline:
@@ -138,7 +137,7 @@ def main(run_baseline=True, run_dnn=False, use_tuner=False):
         
 if __name__ == "__main__":
     main(
-        run_baseline=True,
-        run_dnn=True,
+        run_baseline=False, 
+        run_dnn=False, 
         use_tuner=True
         )
