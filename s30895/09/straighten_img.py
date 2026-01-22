@@ -24,6 +24,6 @@ print(latent)
 straightened = decoder.predict(latent)
 
 output_img = straightened[0, :, :]
-plt.imsave("plots/straightened_img.png", output_img, cmap="gray")
+plt.imsave("straightened_img.png", output_img, cmap="gray")
 
 print("Saved output image: straightened_img.png")
