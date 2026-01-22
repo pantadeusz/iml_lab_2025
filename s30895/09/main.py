@@ -104,6 +104,7 @@ if __name__ == "__main__":
   autoencoder = Autoencoder(latent_dim,shape)
 
   autoencoder.compile(optimizer='adam', loss=tf.keras.losses.MeanSquaredError())
+  autoencoder.summary()
 
   x_train = x_train.astype('float32') / 255. #train labels
   x_test = x_test.astype('float32') / 255. #test labels

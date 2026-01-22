@@ -1,0 +1,29 @@
+model_name,layers,optimizer,test_accuracy,test_loss
+v2_elu_mn_30.keras,"flatten(Flatten) | dense(64, act=elu) | dense_1(64, act=elu) | dropout(Dropout) | dense_2(32, act=elu) | dense_3(3, act=softmax)",adam,0.6719,0.8961
+tuner_model_30_max_trials_5_executions_per_trial_2.keras,"flatten(Flatten) | dense(80, act=elu) | dense_1(112, act=elu) | dense_2(368, act=elu) | dense_3(272, act=elu) | dense_4(464, act=elu) | dense_5(432, act=elu) | dense_6(3, act=softmax)",SGD,0.75,0.6375
+tuner_model_30_max_trials_2_executions_per_trial_5.keras,"flatten(Flatten) | dense(336, act=relu) | dense_1(304, act=relu) | dense_2(16, act=relu) | dense_3(16, act=relu) | dropout(Dropout) | dense_4(3, act=softmax)",SGD,0.6875,0.8642
+v2_tanh_30_5.keras,"flatten(Flatten) | dense(128, act=relu) | dense_1(64, act=relu) | dropout(Dropout) | dense_2(32, act=relu) | dense_3(16, act=relu) | dense_4(3, act=softmax)",adam,0.7109,0.8869
+v1_30.keras,"flatten(Flatten) | dense(128, act=relu) | dense_1(64, act=relu) | dense_2(32, act=relu) | dense_3(3, act=softmax)",adam,0.6172,1.0745
+v2_elu_mn_30_1.keras,"flatten(Flatten) | dense(64, act=elu) | dropout(Dropout) | dense_1(32, act=elu) | dense_2(3, act=softmax)",adam,0.5469,0.8451
+v2_tanh_30_6.keras,"flatten(Flatten) | dense(64, act=relu) | dense_1(64, act=relu) | dropout(Dropout) | dense_2(32, act=relu) | dense_3(3, act=softmax)",adam,0.3359,1.0986
+v2_tanh_30_3.keras,"flatten(Flatten) | dense(64, act=relu) | dense_1(64, act=relu) | dropout(Dropout) | dense_2(32, act=relu) | dense_3(16, act=relu) | dense_4(3, act=softmax)",rmsprop,0.3359,1.0986
+v2_elu_50.keras,"flatten(Flatten) | dense(128, act=elu) | dense_1(64, act=elu) | dropout(Dropout) | dense_2(32, act=elu) | dense_3(16, act=elu) | dense_4(3, act=softmax)",adam,0.75,0.8079
+v2_41.keras,"flatten(Flatten) | dense(128, act=relu) | dense_1(64, act=relu) | dropout(Dropout) | dense_2(32, act=relu) | dense_3(16, act=relu) | dense_4(3, act=softmax)",adam,0.6094,0.9581
+v1_50.keras,"flatten(Flatten) | dense(128, act=relu) | dense_1(64, act=relu) | dense_2(32, act=relu) | dense_3(3, act=softmax)",adam,0.6328,1.0312
+v1_20_1.keras,"flatten(Flatten) | dense(128, act=relu) | dropout(Dropout) | dense_1(64, act=relu) | dense_2(32, act=relu) | dense_3(3, act=softmax)",adam,0.5625,0.9223
+v2_tanh_30_1.keras,"flatten(Flatten) | dense(64, act=tanh) | dense_1(64, act=tanh) | dropout(Dropout) | dense_2(32, act=tanh) | dense_3(3, act=softmax)",adam,0.3359,1.099
+v2_elu_30_1.keras,"flatten(Flatten) | dense(128, act=elu) | dense_1(64, act=elu) | dropout(Dropout) | dense_2(32, act=elu) | dense_3(16, act=elu) | dense_4(3, act=softmax)",adam,0.5547,1.2132
+v1_20.keras,"flatten(Flatten) | dense(128, act=relu) | dense_1(64, act=relu) | dense_2(32, act=relu) | dense_3(3, act=softmax)",adam,0.625,0.8273
+v2_elu_30.keras,"flatten(Flatten) | dense(128, act=elu) | dense_1(64, act=elu) | dropout(Dropout) | dense_2(32, act=elu) | dense_3(16, act=elu) | dense_4(3, act=softmax)",adam,0.7266,0.6773
+v1_50_1.keras,"flatten(Flatten) | dense(128, act=relu) | dropout(Dropout) | dense_1(64, act=relu) | dense_2(32, act=relu) | dense_3(3, act=softmax)",adam,0.3359,1.0986
+v2_30.keras,"flatten(Flatten) | dense(128, act=relu) | dense_1(64, act=relu) | dropout(Dropout) | dense_2(32, act=relu) | dense_3(16, act=relu) | dense_4(3, act=softmax)",adam,0.6875,0.7143
+v2_51.keras,"flatten(Flatten) | dense(128, act=relu) | dense_1(64, act=relu) | dropout(Dropout) | dense_2(32, act=relu) | dense_3(16, act=relu) | dense_4(3, act=softmax)",adam,0.6406,0.8062
+v2_40.keras,"flatten(Flatten) | dense(128, act=relu) | dense_1(64, act=relu) | dropout(Dropout) | dense_2(32, act=relu) | dense_3(16, act=relu) | dense_4(3, act=softmax)",adam,0.6875,0.8538
+v1_10_1.keras,"flatten(Flatten) | dense(128, act=relu) | dropout(Dropout) | dense_1(64, act=relu) | dense_2(32, act=relu) | dense_3(3, act=softmax)",adam,0.5469,0.9259
+tuner_model_30_max_trials_3_executions_per_trial_3.keras,"flatten(Flatten) | dense(208, act=tanh) | dense_1(496, act=tanh) | dense_2(16, act=tanh) | dense_3(112, act=tanh) | dense_4(112, act=tanh) | dense_5(272, act=tanh) | dense_6(3, act=softmax)",SGD,0.6719,0.7945
+v1_10.keras,"flatten(Flatten) | dense(128, act=relu) | dense_1(64, act=relu) | dense_2(32, act=relu) | dense_3(3, act=softmax)",adam,0.6562,0.8168
+v2_tanh_30.keras,"flatten(Flatten) | dense(64, act=tanh) | dropout(Dropout) | dense_1(32, act=tanh) | dense_2(3, act=softmax)",adam,0.3359,1.1012
+v1_30_1.keras,"flatten(Flatten) | dense(128, act=relu) | dropout(Dropout) | dense_1(64, act=relu) | dense_2(32, act=relu) | dense_3(3, act=softmax)",adam,0.3359,1.0986
+v2_50.keras,"flatten(Flatten) | dense(128, act=relu) | dense_1(64, act=relu) | dropout(Dropout) | dense_2(32, act=relu) | dense_3(16, act=relu) | dense_4(3, act=softmax)",adam,0.6484,0.9915
+v2_tanh_30_4.keras,"flatten(Flatten) | dense(128, act=relu) | dense_1(64, act=relu) | dropout(Dropout) | dense_2(32, act=relu) | dense_3(16, act=relu) | dense_4(3, act=softmax)",rmsprop,0.3359,1.0986
+v2_tanh_30_2.keras,"flatten(Flatten) | dense(64, act=tanh) | dense_1(64, act=tanh) | dropout(Dropout) | dense_2(32, act=tanh) | dense_3(16, act=tanh) | dense_4(3, act=softmax)",adam,0.3359,1.0987

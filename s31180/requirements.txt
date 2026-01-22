@@ -4,5 +4,6 @@ jupyter
 
 numpy
 scikit-learn
+tensorflow
 black
 imbalanced-learn
