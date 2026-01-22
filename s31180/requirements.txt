@@ -1,3 +1,9 @@
 pandas
 matplotlib
 jupyter
+
+numpy
+scikit-learn
+tensorflow
+black
+imbalanced-learn

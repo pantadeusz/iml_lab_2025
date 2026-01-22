@@ -1,2 +1,6 @@
 venv
 requirements.txt
+*.ipynb
+*.png
+*.keras
+*test.py

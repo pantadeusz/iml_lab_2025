@@ -1,6 +1,14 @@
 pandas
+numpy
 matplotlib
 jupyter
 kagglehub
 scikit-learn
+torch
+torchvision
+tensorflow
+keras
+keras_tuner
+tensorflow_datasets
 imblearn
+opencv-python
