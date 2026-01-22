@@ -1,0 +1,11 @@
+scikit-learn
+matplotlib
+numpy
+pandas
+imbalanced-learn
+tensorflow
+keras-tuner
+tensorflow-datasets
+pillow
+seaborn
+opencv-python
