@@ -5,3 +5,6 @@ lab_env/
 *.jpg
 *.jpeg
 *.csv
+
+*.pkl
+*.keras
