@@ -29,6 +29,7 @@ print(f"Liczba próbek w zbiorze treningowym: {num_train_examples}")
 print(f"Liczba próbek w zbiorze testowym: {num_test_examples}")
 print(f"Rozmiar Batcha: {BATCH_SIZE}. Kroków na epokę: {num_train_examples / BATCH_SIZE:.0f}")
 
+
 def normalize_img(image, label):
     return tf.cast(image, tf.float32) / 255., label
 
@@ -42,46 +43,74 @@ ds_test = (ds_test.map(normalize_img, num_parallel_calls=tf.data.AUTOTUNE)
            .cache()
            )
 
-def evaluate_model(model, data):
+images_list = []
+labels_list = []
+for image_batch, label_batch in ds_test.as_numpy_iterator():
+    images_list.append(image_batch)
+    labels_list.append(label_batch)
+test_images_np = np.concatenate(images_list, axis=0)
+test_labels_np = np.concatenate(labels_list, axis=0)
+
+
+def evaluate_model(model, data, labels):
     print("\n--- Ewaluacja Modelu ---")
     if isinstance(data, tf.data.Dataset):
         loss, accuracy = model.evaluate(data, verbose=1)
     else:
-        loss, accuracy = model.evaluate(data, verbose=1, batch_size=BATCH_SIZE)
+        loss, accuracy = model.evaluate(data, labels, verbose=1, batch_size=BATCH_SIZE)
     print(f"  Strata (Loss): {loss:.4f}")
     print(f"  Dokładność (Accuracy): {accuracy:.4f}")
     return loss, accuracy
 
-def get_augmentation_pipeline():
+
+# ==============================================================================
+# 2. Mechanizm Augmentacji
+# ==============================================================================
+
+def gwt_augmentation_pipeline():
     return models.Sequential([
         layers.RandomTranslation(height_factor=0.1, width_factor=0.1),
         layers.RandomRotation(factor=0.2)
-    ], name="data_augmentation")
+    ], name="Data_Augmentation_Pipeline")
 
 
-data_augmentation = get_augmentation_pipeline()
+data_augmentation = gwt_augmentation_pipeline()
 
 
+def augment_and_negate_dataset(images_np, labels_np):
 
-def augment_and_negate(image, label):
-    image = data_augmentation(tf.expand_dims(image, 0), training=True)[0]
+    def apply_augmentation(image, label):
+        image = data_augmentation(tf.expand_dims(image, 0), training=True)[0]
+
+        if np.random.rand() < 0.3:
+            image = 1.0 - image
+
+        return image, tf.cast(label, tf.float32)
+
+    ds_temp = (tf.data.Dataset.from_tensor_slices((images_np, labels_np))
+               .map(apply_augmentation, num_parallel_calls=tf.data.AUTOTUNE)
+               .batch(BATCH_SIZE))
+
+    images_aug_list = []
+    labels_aug_list = []
+    for images, labels in ds_temp.as_numpy_iterator():
+        images_aug_list.append(images)
+        labels_aug_list.append(labels)
+
+    images_aug = np.concatenate(images_aug_list, axis=0)
+    labels_aug = np.concatenate(labels_aug_list, axis=0)
+    if labels_aug.ndim > 1:
+        labels_aug = labels_aug.squeeze()
+
+    return images_aug, labels_aug
 
 
-    if tf.random.uniform(()) < 0.3:
-        image = 1.0 - image
-
-
-    return image, label
-
-ds_test_augmented = (
-    ds_test
-    .unbatch()
-    .map(augment_and_negate, num_parallel_calls=tf.data.AUTOTUNE)
-    .batch(BATCH_SIZE)
-)
-
+# ==============================================================================
+# 1. & 3. Model Baseline (Dense)
+# ==============================================================================
 
 print("\n--- 1. Trening Modelu BASELINE (Dense) ---")
+
 
 def build_baseline_model(name="Baseline_Dense_Model"):
     model = tf.keras.models.Sequential([
@@ -95,19 +124,22 @@ def build_baseline_model(name="Baseline_Dense_Model"):
     return model
 
 
-
-
 baseline_model = build_baseline_model()
 baseline_model.summary()
 baseline_model.fit(ds_train, epochs=6, validation_data=ds_test, verbose=1)
 baseline_model.save('baseline_mnist_model.keras')
 
-
 print("\n--- 3. Ocena BASELINE na Augmentowanych Danych Testowych ---")
+test_images_augmented_np, test_labels_augmented_np = augment_and_negate_dataset(test_images_np, test_labels_np)
 
-loss_baseline_aug, acc_baseline_aug = evaluate_model(baseline_model, ds_test_augmented)
+loss_baseline_aug, acc_baseline_aug = evaluate_model(baseline_model, test_images_augmented_np, test_labels_augmented_np)
+
+# ==============================================================================
+# 4. Model Augmented Baseline (Dense + Augmentacja)
+# ==============================================================================
 
 print("\n--- 4. Trening Modelu Augmented Baseline ---")
+
 
 def build_augmented_baseline_model(name="Augmented_Dense_Model"):
     model = models.Sequential([
@@ -122,17 +154,21 @@ def build_augmented_baseline_model(name="Augmented_Dense_Model"):
     return model
 
 
-
-
 aug_baseline_model = build_augmented_baseline_model()
 aug_baseline_model.summary()
 early_stopping = callbacks.EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
 aug_baseline_model.fit(ds_train, epochs=10, validation_data=ds_test, callbacks=[early_stopping], verbose=1)
 aug_baseline_model.save('augmented_baseline_mnist_model.keras')
 
+loss_aug_baseline_aug, acc_aug_baseline_aug = evaluate_model(aug_baseline_model, test_images_augmented_np,
+                                                             test_labels_augmented_np)
 
-loss_aug_baseline_aug, acc_aug_baseline_aug = evaluate_model(aug_baseline_model, ds_test_augmented)
+# ==============================================================================
+# 5. & 6. Model CNN Augmented (CNN + Augmentacja)
+# ==============================================================================
+
 print("\n--- 5. & 6. Trening Modelu CNN Augmented ---")
+
 
 def build_cnn_augmented_model(name="CNN_Augmented_Model"):
     model = models.Sequential([
@@ -150,8 +186,6 @@ def build_cnn_augmented_model(name="CNN_Augmented_Model"):
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                   metrics=[SparseCategoricalAccuracy(name='Accuracy')])
     return model
-
-
 
 
 cnn_aug_model = build_cnn_augmented_model()
