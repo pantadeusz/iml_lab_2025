@@ -5,3 +5,6 @@ lab_env/
 *.jpg
 *.jpeg
 *.csv
+
+05/keras_tuner_lab5/
+05/best_dnn_tuned.keras
